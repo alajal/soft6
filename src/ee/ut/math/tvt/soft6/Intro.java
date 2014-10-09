@@ -12,7 +12,6 @@ public class Intro {
     private static final Logger log = Logger.getLogger(Intro.class);
 
     public static void main(String[] args) {
-        System.out.println(System.getProperty("java.class.path"));
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

@@ -5,6 +5,7 @@ bin
 *.iml
 docs
 out
+dist
 
 .project
 .classpath

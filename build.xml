@@ -54,17 +54,26 @@
 
     </target>
 
-    <!-- Build internal documentation -->
-    <target name="javadoc" description="Build internal documentation">
-        <mkdir dir="${doc.dir}"/>
-        <javadoc destdir="${doc.dir}" classpathref="compile.classpath">
-            <fileset dir="${src.dir}" includes="**/*.java"/>
-        </javadoc>
-    </target>
-
     <!-- Clean up build system results -->
     <target name="clean" description="Clean up build system results">
         <delete dir="${build.dir}"/>
+    </target>
+
+    <!--Creates the deployable jar file  -->
+    <target name="dist" depends="build">
+        <jar destfile="${dist.dir}\soft6.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="ee.ut.math.tvt.soft6.Intro" />
+            </manifest>
+        </jar>
+        <!--TODO etc files  -->
+    </target>
+
+
+    <!--TODO fix jrun -->
+    <target name="jrun" depends="dist" description="Opens intro window using the JAR file">
+        <java jar="${dist.dir}\soft6.jar" fork="yes" />
+
     </target>
 
 </project>
