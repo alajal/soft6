@@ -23,7 +23,7 @@
     <path id="test.classpath">
         <pathelement location="${build.classes.dir}"/>
         <!-- configuration -->
-        <pathelement location="${conf.dir}"/>
+        <pathelement location="${conf.dir}"/> <!--/etc-->
         <fileset dir="lib">
             <include name="*.jar"/>
         </fileset>

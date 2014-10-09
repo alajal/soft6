@@ -4,4 +4,11 @@ bin
 .idea
 *.iml
 docs
+out
+
+.project
+.classpath
+.metadata
+.settings
+
 
