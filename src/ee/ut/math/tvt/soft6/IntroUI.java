@@ -27,10 +27,10 @@ public class IntroUI extends JFrame {
         //setting up container & making layout manager
         this.panel = new JPanel(new GridLayout(6, 1));
 
-        this.teamName = new JLabel(" Team name: soft6");
-        this.teamLeader = new JLabel("Team leader: Anu");
-        this.teamLeaderEmail = new JLabel("Team leader email: anulajal@gmail.com");
-        this.teamMembers = new JLabel("Team members: Lembit Valgma, Erki Lomp, Andrey Vavilov, Anu Lajal");
+        this.teamName = new JLabel();
+        this.teamLeader = new JLabel();
+        this.teamLeaderEmail = new JLabel();
+        this.teamMembers = new JLabel();
         this.logo = new JLabel(createImageIcon("GeekHead.jpg"));
     }
 
@@ -46,7 +46,7 @@ public class IntroUI extends JFrame {
     /**
      * Returns an ImageIcon, or null if the path was invalid.
      */
-    protected static ImageIcon createImageIcon(String path) {
+    private ImageIcon createImageIcon(String path) {
         ClassLoader classLoader = IntroUI.class.getClassLoader();//oskab faile leida, otsib classpathist; klassi classloaderilt
         java.net.URL imgURL = classLoader.getResource(path); //kysitakse kus on "path" fail, saan asukoha
 
@@ -58,12 +58,15 @@ public class IntroUI extends JFrame {
         }
     }
 
-    public void fillFields() throws IOException {
+    private void fillFields() throws IOException {
 
         Properties properties = new Properties();
         loadProperties(properties);
-        properties.getProperty("Name");
 
+        teamName.setText("Team name: " + properties.getProperty("Name"));
+        teamLeader.setText("Team leader: " + properties.getProperty("Leader"));
+        teamLeaderEmail.setText("Team leader email: " + properties.getProperty("Email"));
+        teamMembers.setText("Team lmembers: " + properties.getProperty("Members"));
 
     }
 
