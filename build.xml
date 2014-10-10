@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." name="templateApp" default="build">
+<project basedir="." name="POS" default="build">
 
     <!-- Definitions of variables used during the rest of this script -->
 
@@ -7,7 +7,7 @@
     <property name="build.dir" value="${basedir}/build"/>
     <property name="build.classes.dir" value="${build.dir}/classes"/>
     <property name="src.dir" value="${basedir}/src"/>
-    <property name="dist.dir" value="${basedir}/dist"/>
+    <property name="dist.dir" value="${build.dir}/jar"/>
     <property name="conf.dir" value="${basedir}/etc"/>
     <property name="doc.dir" value="${build.dir}/doc"/>
     <property name="test.reports.dir" value="${build.dir}/reports/"/>
@@ -61,6 +61,7 @@
 
     <!--Creates the deployable jar file  -->
     <target name="dist" depends="build">
+    	<mkdir dir="${dist.dir}"/>
         <jar destfile="${dist.dir}\soft6.jar" basedir="${build.dir}">
             <manifest>
                 <attribute name="Main-Class" value="ee.ut.math.tvt.soft6.Intro" />
