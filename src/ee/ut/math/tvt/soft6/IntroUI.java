@@ -1,7 +1,5 @@
 package ee.ut.math.tvt.soft6;
 
-import org.apache.log4j.Logger;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -9,13 +7,14 @@ import java.util.Properties;
 
 public class IntroUI extends JFrame {
 
-    private static final Logger log = Logger.getLogger(IntroUI.class);
     JPanel panel;
     JLabel teamName;
     JLabel teamLeader;
     JLabel teamLeaderEmail;
     JLabel teamMembers;
     JLabel logo;
+    GridBagLayout gridBagLayout = new GridBagLayout();
+    private static final Insets insets = new Insets(0, 0, 0, 0);
 
     public IntroUI() throws IOException {
         createComponents();
@@ -25,7 +24,8 @@ public class IntroUI extends JFrame {
 
     private void createComponents() {
         //setting up container & making layout manager
-        this.panel = new JPanel(new GridLayout(6, 1));
+        this.panel = new JPanel(gridBagLayout);
+        panel.setBackground(Color.white);
 
         this.teamName = new JLabel();
         this.teamLeader = new JLabel();
@@ -35,17 +35,23 @@ public class IntroUI extends JFrame {
     }
 
     private void addComponentsToPanel() {
-        panel.add(teamName);
-        panel.add(teamLeader);
-        panel.add(teamLeaderEmail);
-        panel.add(teamMembers);
+        addComponent(panel,teamName, 0,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
+        addComponent(panel,teamLeader,0,2,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
+        addComponent(panel,teamLeaderEmail,0,3,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
+        addComponent(panel,teamMembers,0,4,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
         panel.add(logo);
         this.add(panel);
+
     }
 
-    /**
-     * Returns an ImageIcon, or null if the path was invalid.
-     */
+    private static void addComponent(Container container, Component component, int gridx, int gridy,
+                                     int gridwidth, int gridheight, int anchor, int fill) {
+        GridBagConstraints gbc = new GridBagConstraints(gridx, gridy, gridwidth, gridheight, 1.0, 1.0,
+                anchor, fill, insets, 0, 0);
+        container.add(component, gbc);
+    }
+
+     // Returns an ImageIcon, or null if the path was invalid.
     private ImageIcon createImageIcon(String path) {
         ClassLoader classLoader = IntroUI.class.getClassLoader();//oskab faile leida, otsib classpathist; klassi classloaderilt
         java.net.URL imgURL = classLoader.getResource(path); //kysitakse kus on "path" fail, saan asukoha
@@ -66,7 +72,7 @@ public class IntroUI extends JFrame {
         teamName.setText("Team name: " + properties.getProperty("Name"));
         teamLeader.setText("Team leader: " + properties.getProperty("Leader"));
         teamLeaderEmail.setText("Team leader email: " + properties.getProperty("Email"));
-        teamMembers.setText("Team lmembers: " + properties.getProperty("Members"));
+        teamMembers.setText("Team members: " + properties.getProperty("Members"));
 
     }
 
