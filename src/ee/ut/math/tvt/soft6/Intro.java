@@ -34,7 +34,7 @@ public class Intro {
 
         //size of frame
         int width = 500;
-        int height = 500;
+        int height = 350;
         intro.setSize(width, height);
 
         //location of screen

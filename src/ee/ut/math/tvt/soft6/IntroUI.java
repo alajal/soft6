@@ -35,17 +35,12 @@ public class IntroUI extends JFrame {
     }
 
     private void addComponentsToPanel() {
-        panel.add(teamName);
-        panel.add(teamLeader);
-        panel.add(teamLeaderEmail);
-        panel.add(teamMembers);
-        panel.add(logo);
-        this.add(panel);
-
         addComponent(panel,teamName, 0,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
         addComponent(panel,teamLeader,0,2,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
         addComponent(panel,teamLeaderEmail,0,3,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
         addComponent(panel,teamMembers,0,4,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
+        panel.add(logo);
+        this.add(panel);
 
     }
 
