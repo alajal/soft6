@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." name="POS" default="build">
+<project basedir="." name="soft6" default="build">
 
     <!-- Definitions of variables used during the rest of this script -->
 
@@ -11,6 +11,8 @@
     <property name="conf.dir" value="${basedir}/etc"/>
     <property name="doc.dir" value="${build.dir}/doc"/>
     <property name="test.reports.dir" value="${build.dir}/reports/"/>
+	<property name="main-class"  value="ee.ut.math.tvt.soft6.Intro"/>
+	<property name="team-name"  value="soft6"/>
 
     <!-- Definitions of classpath variants used for different tasks -->
 
@@ -33,11 +35,10 @@
          Run them from the command line by executing "ant [targetname]"  -->
 
     <target name="run" depends="build" description="Run the template application">
-        <java classname="ee.ut.math.tvt.soft6.Intro" classpathref="test.classpath" fork="yes" />
+        <java classname="${main-class}" classpathref="test.classpath" fork="yes" />
     </target>
 
-    <target name="build" description="Build the system">
-        <mkdir dir="${build.dir}"/>
+    <target name="build" depends="clean" description="Build the system">
         <mkdir dir="${build.classes.dir}"/>
         <javac
                 srcdir="${src.dir}"
@@ -60,21 +61,49 @@
     </target>
 
     <!--Creates the deployable jar file  -->
-    <target name="dist" depends="build">
+    <target name="dist" depends="build, increaseRevision">
     	<mkdir dir="${dist.dir}"/>
-        <jar destfile="${dist.dir}\soft6.jar" basedir="${build.dir}">
+    	
+        <jar destfile="${dist.dir}/${team-name}.jar" basedir="${build.classes.dir}">
+        	<fileset dir="${basedir}">
+        		<include name="**/etc/*"/> <!-- includes entire etc dir -->
+        		<include name="**/lib/*"/> <!-- includes entire lib dir -->
+        	</fileset>
             <manifest>
-                <attribute name="Main-Class" value="ee.ut.math.tvt.soft6.Intro" />
+                <attribute name="Main-Class" value="${main-class}" />
             </manifest>
         </jar>
-        <!--TODO etc files  -->
     </target>
 
 
     <!--TODO fix jrun -->
     <target name="jrun" depends="dist" description="Opens intro window using the JAR file">
-        <java jar="${dist.dir}\soft6.jar" fork="yes" />
-
+        <java 
+        	fork="yes"
+        	classname="${main-class}" >
+        	<classpath>
+        		<path refid="test.classpath"/>
+        		<path location="${dist.dir}/${team-name}.jar"/>
+        	</classpath>
+		</java>
     </target>
+	
+	<target name="increaseRevision" description="Increase revision and update version.properties.">
+		<propertyfile file="${conf.dir}/version.properties" comment="Version properties">
+			<!-- increases revision number by 1 -->
+			<entry key="build.revision.number" type="int" default="0" value="1" operation="+" />
+		</propertyfile>
+		
+		<!-- absolutely no idea why this is needed, doesn't work otherwise -->
+		<property file="${conf.dir}/version.properties"/>
+		               
+        <propertyfile file="${conf.dir}/version.properties">
+        	<!-- updates build number -->
+            <entry key="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}" />
+        </propertyfile>
+
+
+	</target>
+	
 
 </project>
