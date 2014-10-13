@@ -69,6 +69,7 @@
                 <include name="*"/>
                 <!-- tahame etc directory seest asju, mitte etc'd ennast (oleme juba etc dierctorys vt. fileseti parameetrit) -->
             </fileset>
+        	<zipgroupfileset dir="lib" includes="*.jar"/>
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
             </manifest>
@@ -77,17 +78,7 @@
 
 
     <target name="jrun" depends="dist" description="Opens intro window using the JAR file">
-        <java fork="yes"
-              classname="${main-class}">  <!--paneb Java programmi tööle, ülejäänud asjad on selle parameetrid -->
-            <classpath>
-                <path location="${dist.dir}/${team-name}.jar"/>
-                <path>
-                    <fileset dir="lib">
-                        <include name="*.jar"/>
-                    </fileset>
-                </path>
-            </classpath>
-        </java>
+        <java jar="${dist.dir}/${team-name}.jar" fork="yes" />
     </target>
 
     <target name="increaseRevision" description="Increase revision and update version.properties.">
