@@ -75,6 +75,12 @@
             </manifest>
         </jar>
     </target>
+	
+	<target name="runc" depends="build" description="Run the application (console)">
+		<java classname="${main-class}" classpathref="run.classpath" fork="yes">
+			<arg value="console" />
+		</java>
+	</target>
 
 
     <target name="jrun" depends="dist" description="Opens intro window using the JAR file">
