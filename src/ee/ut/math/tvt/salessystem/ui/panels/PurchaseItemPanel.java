@@ -3,6 +3,7 @@ package ee.ut.math.tvt.salessystem.ui.panels;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -10,9 +11,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.List;
 import java.util.NoSuchElementException;
+
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,17 +27,22 @@ import javax.swing.JTextField;
 
 /**
  * Purchase pane + shopping cart tabel UI.
+ * @param <T>
  */
-public class PurchaseItemPanel extends JPanel {
+public class PurchaseItemPanel<T> extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
     // Text field on the dialogPane
-    private JTextField barCodeField;
+    
+    
+    //private JTextField barCodeField;
+
+    //Andrey: Vahetasin JTextField asemele JComboBox
+    private JComboBox<String> barCodeField;
     private JTextField quantityField;
     private JTextField nameField;
     private JTextField priceField;
-
     private JButton addItemButton;
 
     // Warehouse model
@@ -82,7 +92,23 @@ public class PurchaseItemPanel extends JPanel {
         panel.setBorder(BorderFactory.createTitledBorder("Product"));
 
         // Initialize the textfields
-        barCodeField = new JTextField();
+        
+        
+         //Andrey: tegin barCodeField JComboBox
+        //See lahendus on jama, peaks votma automaatselt laoseisu, vaid ei leidnud hetkel kust, seega on hetkel kasitsi
+         final DefaultComboBoxModel<String> names = new DefaultComboBoxModel<String>();
+         
+         StockItem z=model.getWarehouseTableModel().getItemById(1);
+         StockItem z1=model.getWarehouseTableModel().getItemById(2);
+         StockItem z2=model.getWarehouseTableModel().getItemById(3);
+         StockItem z3=model.getWarehouseTableModel().getItemById(4);
+         names.addElement(z.getName());
+         names.addElement(z1.getName());
+         names.addElement(z2.getName());
+         names.addElement(z3.getName());
+         barCodeField = new JComboBox<String>(names);
+
+        //barCodeField = new JTextField();
         quantityField = new JTextField("1");
         nameField = new JTextField();
         priceField = new JTextField();
@@ -146,9 +172,12 @@ public class PurchaseItemPanel extends JPanel {
 
     // Search the warehouse for a StockItem with the bar code entered
     // to the barCode textfield.
+    
+    //Andrey: vahetasin, et info tuleks uuest barCodeFieldist
     private StockItem getStockItemByBarcode() {
         try {
-            int code = Integer.parseInt(barCodeField.getText());
+        	int j=barCodeField.getSelectedIndex()+1;
+            int code = j;
             return model.getWarehouseTableModel().getItemById(code);
         } catch (NumberFormatException ex) {
             return null;
@@ -188,8 +217,9 @@ public class PurchaseItemPanel extends JPanel {
     /**
      * Reset dialog fields.
      */
+    //Andrey: hetkel kommisin valja barCode kuna ei tea, mis sellega teha
     public void reset() {
-        barCodeField.setText("");
+        //barCodeField.setText("");
         quantityField.setText("1");
         nameField.setText("");
         priceField.setText("");
