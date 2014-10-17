@@ -37,7 +37,7 @@ public class PurchaseItemPanel<T> extends JPanel {
 	// private JTextField barCodeField;
 
 	// Andrey: Vahetasin JTextField asemele JComboBox
-	private JComboBox<String> nameComboBox;
+	private JComboBox<StockItem> nameComboBox;
 	private JTextField quantityField;
 	private JTextField nameField;
 	private JTextField priceField;
@@ -95,15 +95,14 @@ public class PurchaseItemPanel<T> extends JPanel {
 		// See lahendus on jama, peaks votma automaatselt laoseisu, vaid ei
 		// leidnud hetkel kust, seega on hetkel kasitsi
 		// L: fixed
-		final DefaultComboBoxModel<String> namesForComboBox = new DefaultComboBoxModel<String>();
+		// final DefaultComboBoxModel<String> namesForComboBox = new DefaultComboBoxModel<String>();
 
+		nameComboBox = new JComboBox<StockItem>();
 		List<StockItem> allStockItems = model.getWarehouseTableModel()
 				.getTableRows(); // L: kysime koik tabeli read
 
-		for (StockItem stockItem : allStockItems) {
-			namesForComboBox.addElement(stockItem.getName()); // L: lisame koik
-																// nimed cb
-																// nimekirja
+		for (StockItem stockItem : allStockItems) { // L: lisame koik nimed cb nimekirja
+			nameComboBox.addItem(stockItem);
 		}
 
 		// StockItem z = model.getWarehouseTableModel().getItemById(1);
@@ -114,7 +113,7 @@ public class PurchaseItemPanel<T> extends JPanel {
 		// namesForComboBox.addElement(z1.getName());
 		// namesForComboBox.addElement(z2.getName());
 		// namesForComboBox.addElement(z3.getName());
-		nameComboBox = new JComboBox<String>(namesForComboBox);
+		// nameComboBox = new JComboBox<StockItem>(allStockItems);
 
 		// barCodeField = new JTextField();
 		quantityField = new JTextField("1");
@@ -167,7 +166,7 @@ public class PurchaseItemPanel<T> extends JPanel {
 
 	// Fill dialog with data from the "database".
 	public void fillDialogFields() {
-		StockItem stockItem = getStockItemByName();
+		StockItem stockItem = getStockItemFromComboBox();
 
 		if (stockItem != null) {
 			nameField.setText(stockItem.getName());
@@ -183,10 +182,11 @@ public class PurchaseItemPanel<T> extends JPanel {
 
 	// Andrey: vahetasin, et info tuleks uuest barCodeFieldist
 	// L: nyyd tuleb tegelt ka, ainult et ID'd peavad olema jarjest, alates 1st
-	private StockItem getStockItemByName() {
+	private StockItem getStockItemFromComboBox() {
 		try {
-			int code = nameComboBox.getSelectedIndex() + 1;
-			return model.getWarehouseTableModel().getItemById(code);
+			//int code = nameComboBox.getSelectedIndex() + 1;
+			//return model.getWarehouseTableModel().getItemById(code);
+			return (StockItem) nameComboBox.getSelectedItem();
 		} catch (NumberFormatException ex) {
 			return null;
 		} catch (NoSuchElementException ex) {
@@ -199,7 +199,7 @@ public class PurchaseItemPanel<T> extends JPanel {
 	 */
 	public void addItemEventHandler() {
 		// add chosen item to the shopping cart.
-		StockItem stockItem = getStockItemByName();
+		StockItem stockItem = getStockItemFromComboBox();
 		if (stockItem != null) {
 			int quantity;
 			try {
@@ -228,7 +228,7 @@ public class PurchaseItemPanel<T> extends JPanel {
 	// Andrey: hetkel kommisin valja barCode kuna ei tea, mis sellega teha
 	public void reset() {
 		// barCodeField.setText("");
-		nameComboBox.setSelectedIndex(0); // L: anname talle esimese vaartuse
+		nameComboBox.setSelectedIndex(-1); // L: tyhi
 		quantityField.setText("1");
 		nameField.setText("");
 		priceField.setText("");
