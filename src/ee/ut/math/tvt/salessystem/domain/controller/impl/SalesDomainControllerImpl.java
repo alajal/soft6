@@ -15,11 +15,20 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 
 	public void submitCurrentPurchase(List<SoldItem> goods)
 			throws VerificationFailedException {
-		// Let's assume we have checked and found out that the buyer is
-		// underaged and
-		// cannot buy chupa-chups
-		throw new VerificationFailedException("Underaged!");
-		// XXX - Save purchase
+		// reduces stockItem quantity by soldItem quantity
+		// if sold > stock, then throw error
+
+		for (SoldItem soldItem : goods) {
+			StockItem stockItem = soldItem.getStockItem();
+			
+			int newQuantity = stockItem.getQuantity() - soldItem.getQuantity();
+			
+			if (newQuantity >= 0) {
+				stockItem.setQuantity(newQuantity);
+			} else {
+				throw new VerificationFailedException("More sold items than in stock!");
+			}
+		}
 	}
 
 	public void cancelCurrentPurchase() throws VerificationFailedException {
