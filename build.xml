@@ -103,7 +103,7 @@
         </propertyfile>
     </target>
 	
-	<!-- Git targets, requires Git on PATH (I think) -->
+	<!-- Git targets -->
 	
 	<target name="git_commit" description="Commits to the local repository and pushes changes to the GitHub server">
 		<!-- add all unstaged stuff to index -->
@@ -124,7 +124,9 @@
 		
 		<!-- ask user for username and passwd, push to repo -->
 		<input message="username" addproperty="username"/>
-		<input message="password" addproperty="password"/>
+		<input message="password" addproperty="password">
+			<handler type="secure"/>
+		</input>
 		<exec executable="git" dir="${basedir}">
 			<arg value="push"/>
 			<arg value="https://${username}:${password}@${git.repo.name}"/>
