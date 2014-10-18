@@ -95,13 +95,15 @@ public class PurchaseItemPanel<T> extends JPanel {
 		// See lahendus on jama, peaks votma automaatselt laoseisu, vaid ei
 		// leidnud hetkel kust, seega on hetkel kasitsi
 		// L: fixed
-		// final DefaultComboBoxModel<String> namesForComboBox = new DefaultComboBoxModel<String>();
+		// final DefaultComboBoxModel<String> namesForComboBox = new
+		// DefaultComboBoxModel<String>();
 
 		nameComboBox = new JComboBox<StockItem>();
 		List<StockItem> allStockItems = model.getWarehouseTableModel()
 				.getTableRows(); // L: kysime koik tabeli read
 
-		for (StockItem stockItem : allStockItems) { // L: lisame koik nimed cb nimekirja
+		for (StockItem stockItem : allStockItems) { // L: lisame koik nimed cb
+													// nimekirja
 			nameComboBox.addItem(stockItem);
 		}
 
@@ -184,8 +186,8 @@ public class PurchaseItemPanel<T> extends JPanel {
 	// L: nyyd tuleb tegelt ka, ainult et ID'd peavad olema jarjest, alates 1st
 	private StockItem getStockItemFromComboBox() {
 		try {
-			//int code = nameComboBox.getSelectedIndex() + 1;
-			//return model.getWarehouseTableModel().getItemById(code);
+			// int code = nameComboBox.getSelectedIndex() + 1;
+			// return model.getWarehouseTableModel().getItemById(code);
 			return (StockItem) nameComboBox.getSelectedItem();
 		} catch (NumberFormatException ex) {
 			return null;

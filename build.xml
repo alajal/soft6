@@ -11,6 +11,7 @@
     <property name="test.reports.dir" value="${build.dir}/reports/"/>
     <property name="main-class" value="ee.ut.math.tvt.soft6.Intro"/>
     <property name="team-name" value="soft6"/>
+	<property name="git.repo.name" value="github.com/alajal/soft6.git"/>
 
     <!-- Definitions of classpath variants used for different tasks -->
     <path id="compile.classpath">
@@ -100,9 +101,36 @@
             <!-- updates build number -->
             <entry key="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
         </propertyfile>
-
-
     </target>
+	
+	<!-- Git targets, requires Git on PATH (I think) -->
+	
+	<target name="git_commit" description="Commits to the local repository and pushes changes to the GitHub server">
+		<!-- add all unstaged stuff to index -->
+		<exec executable="git" dir="${basedir}">
+			<arg value="add"/>
+			<arg value="-A"/>
+		</exec>
+		
+		<!-- ask for commit comment from user and commit -->
+		<input 
+			message="Enter comments for commit."
+			addproperty="commit.comment"
+		/>
+		<exec executable="git" dir="${basedir}">
+			<arg value="commit"/>
+			<arg value="-m ${commit.comment}"/>
+		</exec>
+		
+		<!-- ask user for username and passwd, push to repo -->
+		<input message="username" addproperty="username"/>
+		<input message="password" addproperty="password"/>
+		<exec executable="git" dir="${basedir}">
+			<arg value="push"/>
+			<arg value="https://${username}:${password}@${git.repo.name}"/>
+		</exec>
+		
+	</target>
 
 
 </project>
