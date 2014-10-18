@@ -67,11 +67,11 @@ public class Intro {
 
         intro.setVisible(false);
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         //log.info("Great success - information window opened.");
     }
