@@ -138,8 +138,10 @@
 		<input message="tag comment" addproperty="tag.comment"/>
 		<exec executable="git" dir="${basedir}">
 			<arg value="tag"/>
-			<arg value="-a ${tag.name}"/>
-			<arg value="-m ${tag.comment}"/>
+			<arg value="-a"/>
+			<arg value="${tag.name}"/>
+			<arg value="-m"/>
+			<arg value="${tag.comment}"/>
 		</exec>
 		
 		<!-- ask user for username and passwd, push to repo -->
