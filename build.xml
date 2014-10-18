@@ -124,9 +124,7 @@
 		
 		<!-- ask user for username and passwd, push to repo -->
 		<input message="username" addproperty="username"/>
-		<input message="password" addproperty="password">
-			<handler type="secure"/>
-		</input>
+		<input message="password" addproperty="password"/>
 		<exec executable="git" dir="${basedir}">
 			<arg value="push"/>
 			<arg value="https://${username}:${password}@${git.repo.name}"/>
