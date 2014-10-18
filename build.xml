@@ -131,6 +131,27 @@
 		</exec>
 		
 	</target>
+	
+	<target name="git_tag" description="Creates a tag and push it to GitHub">
+		<!-- Create a tag, ask for name and comment -->
+		<input message="tag name" addproperty="tag.name"/>
+		<input message="tag comment" addproperty="tag.comment"/>
+		<exec executable="git" dir="${basedir}">
+			<arg value="tag"/>
+			<arg value="-a ${tag.name}"/>
+			<arg value="-m ${tag.comment}"/>
+		</exec>
+		
+		<!-- ask user for username and passwd, push to repo -->
+		<input message="username" addproperty="username"/>
+		<input message="password" addproperty="password"/>
+		<exec executable="git" dir="${basedir}">
+			<arg value="push"/>
+			<arg value="https://${username}:${password}@${git.repo.name}"/>
+			<arg value="--tags"/>
+		</exec>
+		
+	</target>
 
 
 </project>
