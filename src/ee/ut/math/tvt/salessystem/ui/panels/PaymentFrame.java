@@ -5,6 +5,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,6 +21,11 @@ import org.apache.log4j.Logger;
 
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
 
+import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
+import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
+import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
+import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+
 public class PaymentFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -30,9 +38,18 @@ public class PaymentFrame extends JFrame {
 	// buttons for accepting and cancelling
 	private JButton acceptButton;
 	private JButton cancelButton;
+	
+	private List<SoldItem> soldItems;
+	
+	private final SalesDomainController domainController;
+	private SalesSystemModel model;
 
 	// create panel and add stuff to it
-	public PaymentFrame() {
+	public PaymentFrame(List<SoldItem> soldItems, SalesDomainController controller, SalesSystemModel model) {
+		this.soldItems = soldItems;
+		this.domainController = controller;
+		this.model = model;
+		
 		drawPaymentPanel();
 
 		this.setTitle("Payment");
@@ -46,8 +63,8 @@ public class PaymentFrame extends JFrame {
 		}
 
 		// size
-		int width = 600;
-		int height = 400;
+		int width = 300;
+		int height = 200;
 		this.setSize(width, height);
 	    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 	    setLocation((screen.width - width) / 2, (screen.height - height) / 2);
@@ -56,9 +73,9 @@ public class PaymentFrame extends JFrame {
 	private void drawPaymentPanel() {
 		JPanel panel = new JPanel();  // panel for holding stuff
 		
-		this.totalOrderAmountField = new JTextField("0");
-		this.paymentAmountField = new JTextField("0");
-		this.changeAmountField = new JTextField("0");
+		this.totalOrderAmountField = createTotalOrderAmountField();
+		this.paymentAmountField = createPaymentAmountField();
+		this.changeAmountField = createChangeAmountField();
 		this.acceptButton = createAcceptButton();
 		this.cancelButton = createCancelButton();
 
@@ -79,6 +96,54 @@ public class PaymentFrame extends JFrame {
 		
 		this.add(panel);  // add panel to frame
 
+	}
+	
+	// sum up price*quantity for all items, put it in text field
+	private JTextField createTotalOrderAmountField() {
+		double totalAmount = 0.0;
+		for (SoldItem item : this.soldItems) {
+			totalAmount += item.getSum();
+		}
+		
+		JTextField t = new JTextField(Double.toString(totalAmount));
+		t.setEditable(false);
+		t.setEnabled(false);
+		
+		return t;
+	}
+	
+	// create field for entering payment, add listener for change
+	private JTextField createPaymentAmountField() {
+		JTextField t = new JTextField("0");
+		
+		t.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				double orderAmt = Double.parseDouble(totalOrderAmountField.getText());
+				double paymentAmt = Double.parseDouble(paymentAmountField.getText());
+				double changeAmt = Math.max(0, paymentAmt - orderAmt);
+				
+				changeAmountField.setText(Double.toString(changeAmt));
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		return t;
+	}
+	
+	
+	private JTextField createChangeAmountField() {
+		JTextField t = new JTextField("0.0");
+		t.setEditable(false);
+		t.setEnabled(false);
+		
+		return t;
 	}
 
 	// creates Accept button
@@ -109,13 +174,27 @@ public class PaymentFrame extends JFrame {
 		return b;
 	}
 
+	// cancel just hides the window
 	protected void cancelButtonClicked() {
-		// TODO Auto-generated method stub
+		this.setVisible(false);
 
 	}
 
+	// if payment >= orderAmount the order is submitted and window hidden
 	protected void acceptButtonClicked() {
-		// TODO Auto-generated method stub
+		try {
+			double orderAmt = Double.parseDouble(totalOrderAmountField.getText());
+			double paymentAmt = Double.parseDouble(paymentAmountField.getText());
+			if (paymentAmt >= orderAmt) {
+				this.domainController.submitCurrentPurchase(soldItems);
+				model.getCurrentPurchaseTableModel().clear();
+				
+				this.setVisible(false);
+			}
+			
+		} catch (VerificationFailedException e) {
+			log.error(e.getMessage());
+		}
 
 	}
 
