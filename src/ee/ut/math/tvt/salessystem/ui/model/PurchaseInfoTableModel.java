@@ -11,6 +11,7 @@ import ee.ut.math.tvt.salessystem.ui.SalesSystemUI;
 public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(PurchaseInfoTableModel.class);
+
     public PurchaseInfoTableModel() {
         super(new String[]{"Id", "Name", "Price", "Quantity"});
     }
