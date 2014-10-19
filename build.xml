@@ -113,15 +113,20 @@
 		</exec>
 		
 		<!-- ask for commit comment from user and commit -->
+        <!--##commit.... = input stuff-->
 		<input 
 			message="Enter comments for commit."
 			addproperty="commit.comment"
 		/>
+        <!--${..} on muutuja, mille korral ant asendab muutuja selle v22rtusega-->
+        <!-- dry-run option can be used to obtain a summary of what is included by any of-->
+        <!--the above for the next commit by giving the same set of parameters-->
 		<exec executable="git" dir="${basedir}">
 			<arg value="commit"/>
+            <arg value="--dry-run"/>
 			<arg value="-m ${commit.comment}"/>
 		</exec>
-		
+
 		<!-- ask user for username and passwd, push to repo -->
 		<input message="username" addproperty="username"/>
 		<input message="password" addproperty="password"/>
