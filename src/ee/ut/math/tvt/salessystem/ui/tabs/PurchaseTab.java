@@ -84,40 +84,40 @@ public class PurchaseTab {
 
     // Creates the button "New purchase"
     private JButton createNewPurchaseButton() {
-        JButton b = new JButton("New purchase");
-        b.addActionListener(new ActionListener() {
+        JButton purchaseButton = new JButton("New purchase");
+        purchaseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 newPurchaseButtonClicked();
             }
         });
 
-        return b;
+        return purchaseButton;
     }
 
     // Creates the "Confirm" button
     private JButton createConfirmButton() {
-        JButton b = new JButton("Confirm");
-        b.addActionListener(new ActionListener() {
+        JButton confirmButton = new JButton("Confirm");
+        confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 submitPurchaseButtonClicked();
             }
         });
-        b.setEnabled(false);
+        confirmButton.setEnabled(false);
 
-        return b;
+        return confirmButton;
     }
 
     // Creates the "Cancel" button
     private JButton createCancelButton() {
-        JButton b = new JButton("Cancel");
-        b.addActionListener(new ActionListener() {
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cancelPurchaseButtonClicked();
             }
         });
-        b.setEnabled(false);
+        cancelButton.setEnabled(false);
 
-        return b;
+        return cancelButton;
     }
 
 	/*
@@ -125,9 +125,6 @@ public class PurchaseTab {
 	 * are clicked)
 	 */
 
-    /**
-     * Event handler for the <code>new purchase</code> event.
-     */
     protected void newPurchaseButtonClicked() {
         log.info("New sale process started");
         try {
@@ -138,9 +135,7 @@ public class PurchaseTab {
         }
     }
 
-    /**
-     * Event handler for the <code>cancel purchase</code> event.
-     */
+
     protected void cancelPurchaseButtonClicked() {
         log.info("Sale cancelled");
         try {
@@ -152,9 +147,7 @@ public class PurchaseTab {
         }
     }
 
-    /**
-     * Event handler for the <code>submit purchase</code> event.
-     */
+
     protected void submitPurchaseButtonClicked() {
         log.info("Sale complete");
         try {
