@@ -37,11 +37,11 @@ public class IntroUI extends JFrame {
     }
 
     private void addComponentsToPanel() {
-        addComponent(panel,teamName, 0,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
-        addComponent(panel,teamLeader,0,2,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
-        addComponent(panel,teamLeaderEmail,0,3,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
-        addComponent(panel,teamMembers,0,4,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
-        addComponent(panel,buildNbr,0,5,1,1,GridBagConstraints.CENTER,GridBagConstraints.CENTER);
+        addComponent(panel, teamName, 0, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+        addComponent(panel, teamLeader, 0, 2, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+        addComponent(panel, teamLeaderEmail, 0, 3, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+        addComponent(panel, teamMembers, 0, 4, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
+        addComponent(panel, buildNbr, 0, 5, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.CENTER);
         panel.add(logo);
         this.add(panel);
 
@@ -54,7 +54,7 @@ public class IntroUI extends JFrame {
         container.add(component, gbc);
     }
 
-     // Returns an ImageIcon, or null if the path was invalid.
+    // Returns an ImageIcon, or null if the path was invalid.
     private ImageIcon createImageIcon(String path) {
         ClassLoader classLoader = IntroUI.class.getClassLoader();  // oskab faile leida, otsib classpathist; klassi classloaderilt
         java.net.URL imgURL = classLoader.getResource(path);  // kysitakse kus on "path" fail, saan asukoha
@@ -76,7 +76,7 @@ public class IntroUI extends JFrame {
         teamLeader.setText("Team leader: " + properties.getProperty("Leader"));
         teamLeaderEmail.setText("Team leader email: " + properties.getProperty("Email"));
         teamMembers.setText("Team members: " + properties.getProperty("Members"));
-        
+
         loadProperties(properties, "version.properties");  // andmed version.properties failist
         buildNbr.setText("Build number: " + properties.getProperty("build.number"));
 

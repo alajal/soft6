@@ -4,43 +4,23 @@ package ee.ut.math.tvt.salessystem.domain.data;
  * Stock item. Corresponds to the Data Transfer Object design pattern.
  */
 public class StockItem implements Cloneable, DisplayableItem {
-	
+
     private Long id;
-
     private String name;
-
     private double price;
-
     private String description;
-    
     private int quantity;
 
-    /**
-     * Constucts new <code>StockItem</code> with the specified values.
-     * @param id barcode id
-     * @param name name of the product
-     * @param desc description of the product
-     * @param price price of the product
-     */
-    public StockItem(Long id, String name, String desc, double price) {
-        this.id = id;
-        this.name = name;
-        this.description = desc;
-        this.price = price;
-    }
-    
-    public StockItem(Long id, String name, String desc, double price, int quantity) {
-        this.id = id;
-        this.name = name;
-        this.description = desc;
-        this.price = price;
-        this.quantity = quantity;
+    public StockItem(Long barcodeId, String productName, String productDescription, double productPrice) {
+        this.id = barcodeId;
+        this.name = productName;
+        this.description = productDescription;
+        this.price = productPrice;
     }
 
-    /**
-     * Constructs new  <code>StockItem</code>.
-     */
-    public StockItem() {
+    public StockItem(Long barcodeId, String productName, String productDescription, double productPrice, int quantity) {
+        this(barcodeId, productName, productDescription, productPrice);
+        this.quantity = quantity;
     }
 
     public String getDescription() {
@@ -74,7 +54,7 @@ public class StockItem implements Cloneable, DisplayableItem {
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public int getQuantity() {
         return quantity;
     }
@@ -89,24 +69,26 @@ public class StockItem implements Cloneable, DisplayableItem {
 
     /**
      * Method for querying the value of a certain column when StockItems are shown
-     * as table rows in the SalesSstemTableModel. The order of the columns is:
+     * as table rows in the SalesSystemTableModel. The order of the columns is:
      * id, name, price, quantity.
      */
     public Object getColumn(int columnIndex) {
-        switch(columnIndex) {
-            case 0: return id;
-            case 1: return name;
-            case 2: return new Double(price);
-            case 3: return new Integer(quantity);
-            default: throw new RuntimeException("invalid column!");
+        switch (columnIndex) {
+            case 0:
+                return id;
+            case 1:
+                return name;
+            case 2:
+                return price;
+            case 3:
+                return quantity;
+            default:
+                throw new RuntimeException("invalid column!");
         }
     }
-    
-    
+
     public Object clone() {
-        StockItem item =
-            new StockItem(getId(), getName(), getDescription(), getPrice(), getQuantity());
-        return item;
+        return new StockItem(getId(), getName(), getDescription(), getPrice(), getQuantity());
     }
-		
+
 }

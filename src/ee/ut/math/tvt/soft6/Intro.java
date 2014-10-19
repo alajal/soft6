@@ -17,27 +17,25 @@ import ee.ut.math.tvt.salessystem.ui.SalesSystemUI;
 public class Intro {
 
     private static final Logger log = Logger.getLogger(Intro.class);
-    private static final String MODE = "console";
-
+    private static final String CONSOLE = "console";
 
     public static void main(String[] args) throws IOException {
-    	final SalesDomainController domainController = new SalesDomainControllerImpl();
+        final SalesDomainController salesDomainController = new SalesDomainControllerImpl();
 
-    	if (args.length == 1 && args[0].equals(MODE)) {
-    		log.debug("Mode: " + MODE);
+        if (args.length == 1 && args[0].equals(CONSOLE)) {
+            log.debug("Mode: " + CONSOLE);
+            ConsoleUI consoleUI = new ConsoleUI(salesDomainController);
+            consoleUI.run();
 
-    		ConsoleUI cui = new ConsoleUI(domainController);
-    		cui.run();
-    	} else {
-
-    		final SalesSystemUI ui = new SalesSystemUI(domainController);
-            ui.setVisible(true);
+        } else {
+            final SalesSystemUI salesSystemUI = new SalesSystemUI(salesDomainController);
+            salesSystemUI.setVisible(true);
 
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        createAndShowGUI();
+                        createAndShowIntroGUI();
                     } catch (IOException e) {
                         log.error("IO problem.", e);
                         throw new RuntimeException(e);
@@ -47,10 +45,10 @@ public class Intro {
                     }
                 }
             });
-    	}
+        }
     }
 
-    private static void createAndShowGUI() throws IOException {
+    private static void createAndShowIntroGUI() throws IOException {
         IntroUI intro = new IntroUI();
         intro.setTitle("Information");
 

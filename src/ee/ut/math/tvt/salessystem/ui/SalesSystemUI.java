@@ -6,6 +6,7 @@ import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 import ee.ut.math.tvt.salessystem.ui.tabs.HistoryTab;
 import ee.ut.math.tvt.salessystem.ui.tabs.PurchaseTab;
 import ee.ut.math.tvt.salessystem.ui.tabs.StockTab;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
@@ -14,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -21,69 +23,63 @@ import org.apache.log4j.Logger;
  */
 public class SalesSystemUI extends JFrame {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    private static final Logger log = Logger.getLogger(SalesSystemUI.class);
+    private final SalesDomainController domainController;
+    private SalesSystemModel warehouseModel;
 
-  private static final Logger log = Logger.getLogger(SalesSystemUI.class);
+    // Instances of tab classes
+    private PurchaseTab purchaseTabMaker;
+    private HistoryTab historyTabMaker;
+    private StockTab stockTabMaker;
 
-  private final SalesDomainController domainController;
 
-  // Warehouse model
-  private SalesSystemModel model;
+    public SalesSystemUI(SalesDomainController domainController) {
+        this.domainController = domainController;
+        this.warehouseModel = new SalesSystemModel(domainController);
 
-  // Instances of tab classes
-  private PurchaseTab purchaseTab;
-  private HistoryTab historyTab;
-  private StockTab stockTab;
+        createTabs();
+        setTitle("Sales system");
+        setWindowsLookAndFeel();
+        createWidgets();
+        setUISizeAndLocation(600, 400);
 
-  /**
-   * Constructs sales system GUI.
-   * @param domainController Sales domain controller.
-   */
-  public SalesSystemUI(SalesDomainController domainController) {
-    this.domainController = domainController;
-    this.model = new SalesSystemModel(domainController);
-
-    // Create singleton instances of the tab classes
-    historyTab = new HistoryTab();
-    stockTab = new StockTab(model);
-    purchaseTab = new PurchaseTab(domainController, model);
-
-    setTitle("Sales system");
-
-    // set L&F to the nice Windows style
-    try {
-      UIManager.setLookAndFeel(new WindowsLookAndFeel());
-
-    } catch (UnsupportedLookAndFeelException e1) {
-      log.warn(e1.getMessage());
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
     }
 
-    drawWidgets();
+    private void setUISizeAndLocation(int width, int height) {
+        setSize(width, height);
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        setLocation((screen.width - width) / 2, (screen.height - height) / 2);
+    }
 
-    // size & location
-    int width = 600;
-    int height = 400;
-    setSize(width, height);
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    setLocation((screen.width - width) / 2, (screen.height - height) / 2);
+    private void setWindowsLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(new WindowsLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e1) {
+            log.warn(e1.getMessage());
+        }
+    }
 
-    addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        System.exit(0);
-      }
-    });
-  }
+    private void createTabs() {
+        historyTabMaker = new HistoryTab();
+        stockTabMaker = new StockTab(warehouseModel);
+        purchaseTabMaker = new PurchaseTab(domainController, warehouseModel);
+    }
 
-  private void drawWidgets() {
-    JTabbedPane tabbedPane = new JTabbedPane();
+    private void createWidgets() {
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.add("Point-of-sale", purchaseTabMaker.createPurchaseTab());
+        tabbedPane.add("Warehouse", stockTabMaker.createStockTab());
+        tabbedPane.add("History", historyTabMaker.createHistoryTab());
 
-    tabbedPane.add("Point-of-sale", purchaseTab.draw());
-    tabbedPane.add("Warehouse", stockTab.draw());
-    tabbedPane.add("History", historyTab.draw());
-
-    getContentPane().add(tabbedPane);
-  }
+        getContentPane().add(tabbedPane);
+    }
 
 }
 
