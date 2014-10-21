@@ -228,10 +228,11 @@ public class PurchaseItemPanel<T> extends JPanel {
     // Andrey: hetkel kommisin valja barCode kuna ei tea, mis sellega teha
     public void reset() {
         // barCodeField.setText("");
-        nameComboBox.setSelectedIndex(-1); // L: tyhi
-        quantityField.setText("1");
-        nameField.setText("");
-        priceField.setText("");
+        nameComboBox.setSelectedIndex(0); // L: tyhi
+        fillDialogFields();
+        //quantityField.setText("1");
+        //nameField.setText("");
+        //priceField.setText("");
     }
 
 	/*
