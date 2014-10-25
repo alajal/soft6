@@ -146,7 +146,7 @@ public class PurchaseTab {
 
 
     protected void submitPurchaseButtonClicked() {
-        log.info("Sale complete");
+        log.info("Confirm button clicked");
         try {
             log.debug("Contents of the current basket:\n"
                     + model.getCurrentPurchaseTableModel());
@@ -158,8 +158,9 @@ public class PurchaseTab {
             List<SoldItem> soldItems = model.getCurrentPurchaseTableModel()
                     .getTableRows();
             PaymentFrame paymentPanel = new PaymentFrame(soldItems,
-                    this.domainController, this.model);
+                    this.domainController, this.model, this);
             paymentPanel.setVisible(true);
+           
         } catch (Exception e) {
             log.error(e.getMessage());
         }
@@ -184,7 +185,7 @@ public class PurchaseTab {
     }
 
     // switch UI to the state that allows to initiate new purchase
-    private void endSale() {
+    public void endSale() {
         purchasePane.reset();
 
         cancelPurchase.setEnabled(false);

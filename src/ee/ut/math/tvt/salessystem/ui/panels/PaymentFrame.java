@@ -7,11 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
@@ -25,6 +28,7 @@ import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+import ee.ut.math.tvt.salessystem.ui.tabs.PurchaseTab;
 
 public class PaymentFrame extends JFrame {
 
@@ -43,12 +47,14 @@ public class PaymentFrame extends JFrame {
 
     private final SalesDomainController domainController;
     private SalesSystemModel model;
+    private PurchaseTab purchaseTab;
 
     // create panel and add stuff to it
-    public PaymentFrame(List<SoldItem> soldItems, SalesDomainController controller, SalesSystemModel model) {
+    public PaymentFrame(List<SoldItem> soldItems, SalesDomainController controller, SalesSystemModel model, PurchaseTab purchaseTab) {
         this.soldItems = soldItems;
         this.domainController = controller;
         this.model = model;
+        this.purchaseTab = purchaseTab;
 
         drawPaymentPanel();
 
@@ -114,17 +120,22 @@ public class PaymentFrame extends JFrame {
 
     // create field for entering payment, add listener for change
     private JTextField createPaymentAmountField() {
-        JTextField t = new JTextField("0");
+        JTextField t = new JTextField("0.00");
 
         t.addFocusListener(new FocusListener() {
 
             @Override
             public void focusLost(FocusEvent e) {
-                double orderAmt = Double.parseDouble(totalOrderAmount.getText());
-                double paymentAmt = Double.parseDouble(paymentAmount.getText());
-                double changeAmt = Math.max(0, paymentAmt - orderAmt);
+                try {
+					double orderAmt = Double.parseDouble(totalOrderAmount.getText());
+					double paymentAmt = Double.parseDouble(paymentAmount.getText());
+					double changeAmt = round(Math.max(0, paymentAmt - orderAmt), 2);
 
-                changeAmount.setText(Double.toString(changeAmt));
+					changeAmount.setText(Double.toString(changeAmt));
+				} catch (NumberFormatException e1) {
+					paymentAmount.setText("0.00");
+					JOptionPane.showMessageDialog(null, "Incorrect payment format!");
+				}
             }
 
             @Override
@@ -176,6 +187,7 @@ public class PaymentFrame extends JFrame {
 
     // cancel just hides the window
     protected void cancelButtonClicked() {
+    	log.info("Payment cancelled");
         this.setVisible(false);
 
     }
@@ -184,18 +196,49 @@ public class PaymentFrame extends JFrame {
     protected void acceptButtonClicked() {
         try {
             double orderAmt = Double.parseDouble(totalOrderAmount.getText());
-            double paymentAmt = Double.parseDouble(paymentAmount.getText());
+            
+            String paymentText = paymentAmount.getText();
+            double paymentAmt = Double.parseDouble(paymentText);
+            // L: check if too many decimal points
+            int decimalPlaces;
+            String[] aa = paymentText.split("\\.");
+            if (aa.length <= 1) {
+            	decimalPlaces = 0;
+            } else {
+            	decimalPlaces = aa[1].length();
+            }
+            
             if (paymentAmt >= orderAmt) {
-                this.domainController.submitCurrentPurchase(soldItems);
-                model.getCurrentPurchaseTableModel().clear();
+                 if (decimalPlaces <= 2) {
+                	 log.info("Sale confirmed and payment accepted.");
+                	 
+                     this.domainController.submitCurrentPurchase(soldItems);
+                     model.getCurrentPurchaseTableModel().clear();
 
-                this.setVisible(false);
+                     this.setVisible(false);
+                     purchaseTab.endSale();  // L: sooo ugly
+
+                 } else {
+                	 JOptionPane.showMessageDialog(null, "Too many decimal places!");
+                 }
+            } else {
+            	JOptionPane.showMessageDialog(null, "Too small payment!");
             }
 
         } catch (VerificationFailedException e) {
             log.error(e.getMessage());
         }
 
+    }
+    
+    
+    // L: helper f-n for rounding
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
 }
