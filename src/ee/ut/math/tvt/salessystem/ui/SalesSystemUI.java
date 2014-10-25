@@ -3,7 +3,7 @@ package ee.ut.math.tvt.salessystem.ui;
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
-import ee.ut.math.tvt.salessystem.ui.tabs.HistoryTab;
+import ee.ut.math.tvt.salessystem.ui.tabs.HistoryTabMaker;
 import ee.ut.math.tvt.salessystem.ui.tabs.PurchaseTab;
 import ee.ut.math.tvt.salessystem.ui.tabs.StockTab;
 
@@ -30,7 +30,7 @@ public class SalesSystemUI extends JFrame {
 
     // Instances of tab classes
     private PurchaseTab purchaseTabMaker;
-    private HistoryTab historyTabMaker;
+    private HistoryTabMaker historyTabMaker;
     private StockTab stockTabMaker;
 
 
@@ -67,7 +67,7 @@ public class SalesSystemUI extends JFrame {
     }
 
     private void createTabs() {
-        historyTabMaker = new HistoryTab();
+        historyTabMaker = new HistoryTabMaker();
         stockTabMaker = new StockTab(warehouseModel);
         purchaseTabMaker = new PurchaseTab(domainController, warehouseModel);
     }

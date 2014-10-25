@@ -186,7 +186,7 @@ public class PurchaseItemPanel<T> extends JPanel {
         try {
             // int code = nameComboBox.getSelectedIndex() + 1;
             // return model.getWarehouseTableModel().getItemById(code);
-            return (StockItem) nameComboBox.getSelectedItem();
+            return (StockItem) nameComboBox.getSelectedItem(); //POSSIBLE PLACE FOR EXCEPTION
         } catch (NumberFormatException ex) {
             return null;
         } catch (NoSuchElementException ex) {

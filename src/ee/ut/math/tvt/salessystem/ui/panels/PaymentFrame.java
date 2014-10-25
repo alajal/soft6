@@ -32,9 +32,9 @@ public class PaymentFrame extends JFrame {
     private static final Logger log = Logger.getLogger(PaymentFrame.class);
 
     // text fields for totalOrderAmount, paymentAmount, changeAmount
-    private JTextField totalOrderAmountField;
-    private JTextField paymentAmountField;
-    private JTextField changeAmountField;
+    private JTextField totalOrderAmount;
+    private JTextField paymentAmount;
+    private JTextField changeAmount;
     // buttons for accepting and cancelling
     private JButton acceptButton;
     private JButton cancelButton;
@@ -73,9 +73,9 @@ public class PaymentFrame extends JFrame {
     private void drawPaymentPanel() {
         JPanel panel = new JPanel();  // panel for holding stuff
 
-        this.totalOrderAmountField = createTotalOrderAmountField();
-        this.paymentAmountField = createPaymentAmountField();
-        this.changeAmountField = createChangeAmountField();
+        this.totalOrderAmount = createTotalOrderAmountField();
+        this.paymentAmount = createPaymentAmountField();
+        this.changeAmount = createChangeAmountField();
         this.acceptButton = createAcceptButton();
         this.cancelButton = createCancelButton();
 
@@ -83,13 +83,13 @@ public class PaymentFrame extends JFrame {
 
         // add labels and fields to panel
         panel.add(new JLabel("Order total sum"));
-        panel.add(totalOrderAmountField);
+        panel.add(totalOrderAmount);
 
         panel.add(new JLabel("Payment amount"));
-        panel.add(paymentAmountField);
+        panel.add(paymentAmount);
 
         panel.add(new JLabel("Change amount"));
-        panel.add(changeAmountField);
+        panel.add(changeAmount);
 
         panel.add(acceptButton);
         panel.add(cancelButton);
@@ -120,11 +120,11 @@ public class PaymentFrame extends JFrame {
 
             @Override
             public void focusLost(FocusEvent e) {
-                double orderAmt = Double.parseDouble(totalOrderAmountField.getText());
-                double paymentAmt = Double.parseDouble(paymentAmountField.getText());
+                double orderAmt = Double.parseDouble(totalOrderAmount.getText());
+                double paymentAmt = Double.parseDouble(paymentAmount.getText());
                 double changeAmt = Math.max(0, paymentAmt - orderAmt);
 
-                changeAmountField.setText(Double.toString(changeAmt));
+                changeAmount.setText(Double.toString(changeAmt));
             }
 
             @Override
@@ -183,8 +183,8 @@ public class PaymentFrame extends JFrame {
     // if payment >= orderAmount the order is submitted and window hidden
     protected void acceptButtonClicked() {
         try {
-            double orderAmt = Double.parseDouble(totalOrderAmountField.getText());
-            double paymentAmt = Double.parseDouble(paymentAmountField.getText());
+            double orderAmt = Double.parseDouble(totalOrderAmount.getText());
+            double paymentAmt = Double.parseDouble(paymentAmount.getText());
             if (paymentAmt >= orderAmt) {
                 this.domainController.submitCurrentPurchase(soldItems);
                 model.getCurrentPurchaseTableModel().clear();

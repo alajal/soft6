@@ -39,10 +39,7 @@ public class PurchaseTab {
         this.model = model;
     }
 
-    /**
-     * The purchase tab. Consists of the purchase menu, current purchase dialog
-     * and shopping cart table.
-     */
+
     public Component createPurchaseTab() {
         JPanel panel = new JPanel();
 

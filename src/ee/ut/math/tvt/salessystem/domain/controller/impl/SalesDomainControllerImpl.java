@@ -13,12 +13,12 @@ import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
  */
 public class SalesDomainControllerImpl implements SalesDomainController {
 
-    public void submitCurrentPurchase(List<SoldItem> goods)
+    public void submitCurrentPurchase(List<SoldItem> goodsChosenToBuy)
             throws VerificationFailedException {
         // reduces stockItem quantity by soldItem quantity
         // if sold > stock, then throw error
 
-        for (SoldItem soldItem : goods) {
+        for (SoldItem soldItem : goodsChosenToBuy) {
             StockItem stockItem = soldItem.getStockItem();
 
             int newQuantity = stockItem.getQuantity() - soldItem.getQuantity();
@@ -42,18 +42,18 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 
     public List<StockItem> loadWarehouseState() {
         // XXX mock implementation
-        List<StockItem> dataset = new ArrayList<StockItem>();
+        List<StockItem> stockItemArrayList = new ArrayList<StockItem>();
 
         StockItem chips = new StockItem(1l, "Lays chips", "Potato chips", 11.0, 5);
         StockItem chupaChups = new StockItem(2l, "Chupa-chups", "Sweets", 8.0, 8);
         StockItem frankfurters = new StockItem(3l, "Frankfurters", "Beer sauseges", 15.0, 12);
-        StockItem beer = new StockItem(4l, "Free Beer", "Student's delight", 0.0, 100);
+        StockItem beer = new StockItem(4l, "Free Beer", "Student's delight", 0.0, 1);
 
-        dataset.add(chips);
-        dataset.add(chupaChups);
-        dataset.add(frankfurters);
-        dataset.add(beer);
+        stockItemArrayList.add(chips);
+        stockItemArrayList.add(chupaChups);
+        stockItemArrayList.add(frankfurters);
+        stockItemArrayList.add(beer);
 
-        return dataset;
+        return stockItemArrayList;
     }
 }
