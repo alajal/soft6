@@ -1,25 +1,49 @@
 package ee.ut.math.tvt.salessystem.ui.tabs;
 
+import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+
+
+import org.apache.log4j.Logger;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.JTableHeader;
 
 
 public class StockTab {
-
-    private SalesSystemModel model;
-
+	
+	public StockItem stockItem;
+	private static final Logger log = Logger.getLogger(StockTab.class);
+	private SalesSystemModel model;
+	private JButton addButton;
+    private JButton submitAdd;
+    private JTextField addIdField;
+    private JTextField addNameField;
+    private JTextField addPriceField;
+    private JTextField addQuantityField;
+    
+    private Long id;
+	private String name;
+	private double price;
+	private int quantity;
+    
+    
     public StockTab(SalesSystemModel model) {
         this.model = model;
+
     }
 
     // warehouse stock tab - consists of a menu and a table
@@ -30,7 +54,7 @@ public class StockTab {
         GridBagLayout gridBagLayout = new GridBagLayout();
         GridBagConstraints gc = new GridBagConstraints();
         panel.setLayout(gridBagLayout);
-
+        
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.anchor = GridBagConstraints.NORTH;
         gc.gridwidth = GridBagConstraints.REMAINDER;
@@ -38,36 +62,89 @@ public class StockTab {
         gc.weighty = 0d;
 
         panel.add(drawStockMenuPane(), gc);
-
+        
+        
         gc.weighty = 1.0;
         gc.fill = GridBagConstraints.BOTH;
         panel.add(drawStockMainPane(), gc);
+        
         return panel;
+    }
+    
+    private JButton createNewAddButton() {
+        JButton addButton = new JButton("Add");
+        addButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                newAddButtonClicked();
+            }
+        });
+
+        return addButton;
+    }
+    
+    private JButton createConfirmButton() {
+        JButton confirmButton = new JButton("Confirm");
+        confirmButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                submitaddButtonClicked();
+            }
+        });
+        confirmButton.setEnabled(false);
+
+        return confirmButton;
     }
 
     // warehouse menu
     private Component drawStockMenuPane() {
         JPanel panel = new JPanel();
-
+        //panel.setLayout(new FlowLayout());
         GridBagConstraints gc = new GridBagConstraints();
-        GridBagLayout gb = new GridBagLayout();
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        
+        addIdField = new JTextField("",3);
+        addNameField = new JTextField("",10);
+        addPriceField = new JTextField("",5);
+        addQuantityField = new JTextField("",4);
+        addButton = createNewAddButton();
+        submitAdd = createConfirmButton();
+        
+        panel.add(addButton, gc);
+        
+        
+        panel.add(new JLabel("Id: "), gc);
+        panel.add(addIdField, gc);
+        panel.add(new JLabel("Name:"), gc);
+        panel.add(addNameField, gc);
+        panel.add(new JLabel("Price:"), gc);
+        panel.add(addPriceField, gc);
+        panel.add(new JLabel("Amount:"), gc);
+        panel.add(addQuantityField, gc);
+        
+        panel.add(submitAdd, gc);
+        
+        addIdField.setEditable(false);
+        addNameField.setEditable(false);
+        addPriceField.setEditable(false);
+        addQuantityField.setEditable(false);
 
-        panel.setLayout(gb);
+        //GridBagConstraints gc = new GridBagConstraints();
+        //GridBagLayout gb = new GridBagLayout();
 
-        gc.anchor = GridBagConstraints.NORTHWEST;
-        gc.weightx = 0;
+        //panel.setLayout(gb);
 
-        JButton addItem = new JButton("Add");
-        gc.gridwidth = GridBagConstraints.RELATIVE;
-        gc.weightx = 1.0;
-        panel.add(addItem, gc);
+        //gc.anchor = GridBagConstraints.NORTHWEST;
+        //gc.weightx = 0;
 
+        
+        //gc.gridwidth = GridBagConstraints.RELATIVE;
+        //gc.weightx = 1.0;
+        
         panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         return panel;
     }
 
 
-    // table of the wareshouse stock
+    // table of the warehouse stock
     private Component drawStockMainPane() {
         JPanel panel = new JPanel();
 
@@ -90,5 +167,60 @@ public class StockTab {
         panel.setBorder(BorderFactory.createTitledBorder("Warehouse status"));
         return panel;
     }
-
+    
+    protected void newAddButtonClicked() {
+        log.info("New item input process started");
+        startNewAdd();
+    }
+    private void startNewAdd() {
+    	submitAdd.setEnabled(true);
+    	addIdField.setEditable(true);
+    	addNameField.setEditable(true);
+        addPriceField.setEditable(true);
+        addQuantityField.setEditable(true);
+    }
+    
+    protected void submitaddButtonClicked() {
+        log.info("Confirm button clicked");
+        try {
+        	stockItem = new StockItem(id, name, price, quantity);
+        	int emptyFields = 0;
+            log.info("Adding process started");
+            JTextField [] fields = {addIdField, addNameField, addPriceField, addQuantityField};
+            for (int i = 0; i < fields.length; i++) {
+            	if(fields[i].getText().trim().isEmpty()){
+            		emptyFields += 1;
+            	}
+            }
+            if(emptyFields == 0){
+            	name = addNameField.getText().trim();
+            	
+            	if(fields[0].getText().matches("[0-9]+\\d*") && fields[3].getText().matches("[0-9]+\\d*") && fields[2].getText().matches(("[0-9]*+.+\\d*"))){
+            		log.info("All fields suitable");
+            		id = Long.parseLong(addIdField.getText().trim());
+            		quantity = Integer.parseInt(addQuantityField.getText().trim());
+            		price = Double.parseDouble(addPriceField.getText().trim());
+            		log.info("All fields trimmed and converted");
+            		stockItem.setId(id);
+    				stockItem.setName(name);
+    				stockItem.setPrice(price);
+    				stockItem.setQuantity(quantity);
+    				log.info("Stock item created");
+    				model.getWarehouseTableModel().addItem(stockItem);
+    				
+    				log.info("Item added!");
+    				
+            		}
+            	else{
+            		log.info("Wrong input");
+            		return;
+            	}
+            	
+            }
+            
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+    }
+    
 }
