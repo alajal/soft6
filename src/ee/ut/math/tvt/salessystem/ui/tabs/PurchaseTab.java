@@ -180,11 +180,13 @@ public class PurchaseTab {
     // switch UI to the state that allows to proceed with the purchase
     private void startNewSale() {
         purchasePane.reset();
+        purchasePane.populateComboBox();
 
         purchasePane.setEnabled(true);
         submitPurchase.setEnabled(true);
         cancelPurchase.setEnabled(true);
         newPurchase.setEnabled(false);
+        
     }
 
     // switch UI to the state that allows to initiate new purchase
