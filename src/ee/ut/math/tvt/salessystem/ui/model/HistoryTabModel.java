@@ -51,8 +51,8 @@ public class HistoryTabModel extends SalesSystemTableModel<Order> {
         Double orderSum = 0.0;
         List<SoldItem> orderedItems = order.getOrderedItems();
         for (SoldItem item : orderedItems) {
-            Double itemPrice = item.getPrice();
-            orderSum = orderSum + itemPrice;
+            Double itemsSum = item.getSum();
+            orderSum = orderSum + itemsSum;
         }
         return orderSum;
     }

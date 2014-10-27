@@ -123,7 +123,7 @@
         <!--the above for the next commit by giving the same set of parameters-->
 		<exec executable="git" dir="${basedir}">
 			<arg value="commit"/>
-            <arg value="--dry-run"/>
+            <!--<arg value="-dry-run"/>-->
 			<arg value="-m ${commit.comment}"/>
 		</exec>
 
