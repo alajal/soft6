@@ -38,7 +38,8 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends A
     }
 
     public Object getValueAt(final int rowIndex, final int columnIndex) {
-        return getColumnValue(rows.get(rowIndex), columnIndex);
+        T item = rows.get(rowIndex);
+        return getColumnValue(item, columnIndex);
     }
 
     // search for item with the specified id
@@ -63,6 +64,7 @@ public abstract class SalesSystemTableModel<T extends DisplayableItem> extends A
         rows.clear();
         rows.addAll(data);
     }
+
 
 
 }

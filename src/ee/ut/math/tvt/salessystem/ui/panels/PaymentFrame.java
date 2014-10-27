@@ -9,6 +9,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -20,6 +21,8 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import ee.ut.math.tvt.salessystem.domain.data.Order;
+import ee.ut.math.tvt.salessystem.ui.model.HistoryTabModel;
 import org.apache.log4j.Logger;
 
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
@@ -35,29 +38,25 @@ public class PaymentFrame extends JFrame {
     private static final long serialVersionUID = 1L;
     private static final Logger log = Logger.getLogger(PaymentFrame.class);
 
-    // text fields for totalOrderAmount, paymentAmount, changeAmount
     private JTextField totalOrderAmount;
     private JTextField paymentAmount;
     private JTextField changeAmount;
-    // buttons for accepting and cancelling
     private JButton acceptButton;
     private JButton cancelButton;
-
     private List<SoldItem> soldItems;
-
     private final SalesDomainController domainController;
     private SalesSystemModel model;
     private PurchaseTab purchaseTab;
 
     // create panel and add stuff to it
-    public PaymentFrame(List<SoldItem> soldItems, SalesDomainController controller, SalesSystemModel model, PurchaseTab purchaseTab) {
+    public PaymentFrame(List<SoldItem> soldItems, SalesDomainController controller, SalesSystemModel model, PurchaseTab purchaseTab,
+                        double totalAmount) {
         this.soldItems = soldItems;
         this.domainController = controller;
         this.model = model;
         this.purchaseTab = purchaseTab;
 
-        drawPaymentPanel();
-
+        drawPaymentPanel(totalAmount);
         this.setTitle("Payment");
 
         // set L&F to the nice Windows style
@@ -76,10 +75,10 @@ public class PaymentFrame extends JFrame {
         setLocation((screen.width - width) / 2, (screen.height - height) / 2);
     }
 
-    private void drawPaymentPanel() {
+    private void drawPaymentPanel(double totalAmount) {
         JPanel panel = new JPanel();  // panel for holding stuff
 
-        this.totalOrderAmount = createTotalOrderAmountField();
+        this.totalOrderAmount = createTotalOrderAmountField(totalAmount);
         this.paymentAmount = createPaymentAmountField();
         this.changeAmount = createChangeAmountField();
         this.acceptButton = createAcceptButton();
@@ -105,12 +104,7 @@ public class PaymentFrame extends JFrame {
     }
 
     // sum up price*quantity for all items, put it in text field
-    private JTextField createTotalOrderAmountField() {
-        double totalAmount = 0.0;
-        for (SoldItem item : this.soldItems) {
-            totalAmount += item.getSum();
-        }
-
+    private JTextField createTotalOrderAmountField(double totalAmount) {
         JTextField t = new JTextField(Double.toString(totalAmount));
         t.setEditable(false);
         t.setEnabled(false);
@@ -127,15 +121,15 @@ public class PaymentFrame extends JFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 try {
-					double orderAmt = Double.parseDouble(totalOrderAmount.getText());
-					double paymentAmt = Double.parseDouble(paymentAmount.getText());
-					double changeAmt = round(Math.max(0, paymentAmt - orderAmt), 2);
+                    double orderAmt = Double.parseDouble(totalOrderAmount.getText());
+                    double paymentAmt = Double.parseDouble(paymentAmount.getText());
+                    double changeAmt = round(Math.max(0, paymentAmt - orderAmt), 2);
 
-					changeAmount.setText(Double.toString(changeAmt));
-				} catch (NumberFormatException e1) {
-					paymentAmount.setText("0.00");
-					JOptionPane.showMessageDialog(null, "Incorrect payment format!");
-				}
+                    changeAmount.setText(Double.toString(changeAmt));
+                } catch (NumberFormatException e1) {
+                    paymentAmount.setText("0.00");
+                    JOptionPane.showMessageDialog(null, "Incorrect payment format!");
+                }
             }
 
             @Override
@@ -187,7 +181,7 @@ public class PaymentFrame extends JFrame {
 
     // cancel just hides the window
     protected void cancelButtonClicked() {
-    	log.info("Payment cancelled");
+        log.info("Payment cancelled");
         this.setVisible(false);
 
     }
@@ -196,33 +190,38 @@ public class PaymentFrame extends JFrame {
     protected void acceptButtonClicked() {
         try {
             double orderAmt = Double.parseDouble(totalOrderAmount.getText());
-            
+
             String paymentText = paymentAmount.getText();
             double paymentAmt = Double.parseDouble(paymentText);
             // L: check if too many decimal points
             int decimalPlaces;
             String[] aa = paymentText.split("\\.");
             if (aa.length <= 1) {
-            	decimalPlaces = 0;
+                decimalPlaces = 0;
             } else {
-            	decimalPlaces = aa[1].length();
+                decimalPlaces = aa[1].length();
             }
-            
+
             if (paymentAmt >= orderAmt) {
-                 if (decimalPlaces <= 2) {
-                	 log.info("Sale confirmed and payment accepted.");
-                	 
-                     this.domainController.submitCurrentPurchase(soldItems);
-                     model.getCurrentPurchaseTableModel().clear();
+                if (decimalPlaces <= 2) {
+                    log.info("Sale confirmed and payment accepted.");
 
-                     this.setVisible(false);
-                     purchaseTab.endSale();  // L: sooo ugly
+                    //HistoryTabModel comes in
+                    HistoryTabModel historyTabModel = model.getHistoryTabModel();
+                    Order order = new Order(soldItems, new Date());
+                    historyTabModel.addData(order);
 
-                 } else {
-                	 JOptionPane.showMessageDialog(null, "Too many decimal places!");
-                 }
+                    this.domainController.submitCurrentPurchase(soldItems);
+                    model.getCurrentPurchaseTableModel().clear();
+
+                    this.setVisible(false);
+                    purchaseTab.endSale();  // L: sooo ugly
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Too many decimal places!");
+                }
             } else {
-            	JOptionPane.showMessageDialog(null, "Too small payment!");
+                JOptionPane.showMessageDialog(null, "Too small payment!");
             }
 
         } catch (VerificationFailedException e) {
@@ -230,8 +229,8 @@ public class PaymentFrame extends JFrame {
         }
 
     }
-    
-    
+
+
     // L: helper f-n for rounding
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();

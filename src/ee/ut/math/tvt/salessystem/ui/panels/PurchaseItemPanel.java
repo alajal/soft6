@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 
 /**
@@ -71,7 +72,8 @@ public class PurchaseItemPanel<T> extends JPanel {
 
         // Create the table, put it inside a scollPane,
         // and add the scrollPane to the basketPanel.
-        JTable table = new JTable(model.getCurrentPurchaseTableModel());
+        PurchaseInfoTableModel currentPurchaseTableModel = model.getCurrentPurchaseTableModel();
+        JTable table = new JTable(currentPurchaseTableModel);
         JScrollPane scrollPane = new JScrollPane(table);
 
         basketPane.add(scrollPane, getBacketScrollPaneConstraints());
@@ -207,8 +209,7 @@ public class PurchaseItemPanel<T> extends JPanel {
             } catch (NumberFormatException ex) {
                 quantity = 1;
             }
-            model.getCurrentPurchaseTableModel().addStockItem(
-                    new SoldItem(stockItem, quantity));
+            model.getCurrentPurchaseTableModel().addStockItem(new SoldItem(stockItem, quantity));
         }
     }
 

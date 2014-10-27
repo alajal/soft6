@@ -148,29 +148,30 @@ public class PurchaseTab {
     protected void submitPurchaseButtonClicked() {
         log.info("Confirm button clicked");
         try {
-            log.debug("Contents of the current basket:\n"
-                    + model.getCurrentPurchaseTableModel());
-            // domainController.submitCurrentPurchase(
-            // model.getCurrentPurchaseTableModel().getTableRows()
-            // );
+            log.debug("Contents of the current basket:\n" + model.getCurrentPurchaseTableModel());
+            // domainController.submitCurrentPurchase(model.getCurrentPurchaseTableModel().getTableRows());
             // endSale();
             // model.getCurrentPurchaseTableModel().clear();
-            List<SoldItem> soldItems = model.getCurrentPurchaseTableModel()
-                    .getTableRows();
-            PaymentFrame paymentPanel = new PaymentFrame(soldItems,
-                    this.domainController, this.model, this);
+            List<SoldItem> soldItems = model.getCurrentPurchaseTableModel().getTableRows();
+            PaymentFrame paymentPanel = new PaymentFrame(soldItems, this.domainController, this.model, this, getTotalOrderAmount(soldItems));
             paymentPanel.setVisible(true);
-           
+
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-        // catch (VerificationFailedException e1) {
-        // log.error(e1.getMessage());
-        // }
+        // catch (VerificationFailedException e1) { log.error(e1.getMessage()); }
+    }
+
+    private double getTotalOrderAmount(List<SoldItem> soldItems) {
+        double totalAmount = 0.0;
+        for (SoldItem item : soldItems) {
+            totalAmount += item.getSum();
+        }
+        return totalAmount;
     }
 
 	/*
-	 * === Helper methods that bring the whole purchase-tab to a certain state
+     * === Helper methods that bring the whole purchase-tab to a certain state
 	 * when called.
 	 */
 

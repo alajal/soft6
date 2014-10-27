@@ -4,6 +4,7 @@ import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 
 
+import ee.ut.math.tvt.salessystem.ui.model.StockTableModel;
 import org.apache.log4j.Logger;
 
 import java.awt.Color;
@@ -148,7 +149,8 @@ public class StockTab {
     private Component drawStockMainPane() {
         JPanel panel = new JPanel();
 
-        JTable table = new JTable(model.getWarehouseTableModel());
+        StockTableModel warehouseTableModel = model.getWarehouseTableModel();
+        JTable table = new JTable(warehouseTableModel);
 
         JTableHeader header = table.getTableHeader();
         header.setReorderingAllowed(false);

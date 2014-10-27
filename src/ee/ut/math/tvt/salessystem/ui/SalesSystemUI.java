@@ -67,7 +67,7 @@ public class SalesSystemUI extends JFrame {
     }
 
     private void createTabs() {
-        historyTabMaker = new HistoryTabMaker();
+        historyTabMaker = new HistoryTabMaker(warehouseModel);
         stockTabMaker = new StockTab(warehouseModel);
         purchaseTabMaker = new PurchaseTab(domainController, warehouseModel);
     }
