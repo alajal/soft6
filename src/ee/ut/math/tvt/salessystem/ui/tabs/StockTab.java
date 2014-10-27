@@ -5,6 +5,8 @@ import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 
 
 import ee.ut.math.tvt.salessystem.ui.model.StockTableModel;
+import ee.ut.math.tvt.salessystem.ui.panels.PaymentFrame;
+
 import org.apache.log4j.Logger;
 
 import java.awt.Color;
@@ -102,7 +104,7 @@ public class StockTab {
         GridBagConstraints gc = new GridBagConstraints();
         gc.fill = GridBagConstraints.HORIZONTAL;
         
-        addIdField = new JTextField("",3);
+        addIdField = new JTextField(Integer.toString(model.getWarehouseTableModel().getRowCount()+1),3);
         addNameField = new JTextField("",10);
         addPriceField = new JTextField("",5);
         addQuantityField = new JTextField("",4);
@@ -127,6 +129,16 @@ public class StockTab {
         addNameField.setEditable(false);
         addPriceField.setEditable(false);
         addQuantityField.setEditable(false);
+        
+        addIdField.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				fillDialogFields();
+				
+			}
+        	
+        });
 
         //GridBagConstraints gc = new GridBagConstraints();
         //GridBagLayout gb = new GridBagLayout();
@@ -170,11 +182,43 @@ public class StockTab {
         return panel;
     }
     
+    public void reset(){
+    	addIdField.setText(Integer.toString(model.getWarehouseTableModel().getRowCount()+1));
+        addNameField.setText("");
+        addPriceField.setText("");
+        addQuantityField.setText("");
+        submitAdd.setEnabled(false);
+        addButton.setEnabled(true);
+        addNameField.setEditable(false);
+        addPriceField.setEditable(false);
+        addQuantityField.setEditable(false);
+    }
+    
+    
+    
+    public void fillDialogFields(){
+    	try{
+    		StockItem item = model.getWarehouseTableModel().getItemById(Integer.parseInt(addIdField.getText()));
+    		addNameField.setText(item.getName());
+        	addNameField.setEditable(false);
+        	addPriceField.setText(String.valueOf(item.getPrice()));
+            addPriceField.setEditable(false);
+    	}
+        catch(Exception e){
+        	addNameField.setText("");
+            addPriceField.setText("");
+            addNameField.setEditable(true);
+            addPriceField.setEditable(true);
+    	}
+    }
+    
+    
     protected void newAddButtonClicked() {
         log.info("New item input process started");
         startNewAdd();
     }
     private void startNewAdd() {
+    	addButton.setEnabled(false);
     	submitAdd.setEnabled(true);
     	addIdField.setEditable(true);
     	addNameField.setEditable(true);
@@ -196,25 +240,27 @@ public class StockTab {
             }
             if(emptyFields == 0){
             	name = addNameField.getText().trim();
-            	
-            	if(fields[0].getText().matches("[0-9]+\\d*") && fields[3].getText().matches("[0-9]+\\d*") && fields[2].getText().matches(("[0-9]*+.+\\d*"))){
-            		log.info("All fields suitable");
+            	//check if fields contain correct data (quantity and id should only consist of numbers 0-9 and price can also contain a ".")
+            	if(fields[0].getText().matches("^\\d+$") && fields[3].getText().matches("^\\d+$") && (fields[2].getText().matches(("[0-9]*\\.?[0-9]*")) || (fields[2].getText().matches(("^\\d+$"))))){
+            		
             		id = Long.parseLong(addIdField.getText().trim());
             		quantity = Integer.parseInt(addQuantityField.getText().trim());
-            		price = Double.parseDouble(addPriceField.getText().trim());
-            		log.info("All fields trimmed and converted");
+            		price = PaymentFrame.round(Double.parseDouble(addPriceField.getText().trim()),2);
+            		
             		stockItem.setId(id);
     				stockItem.setName(name);
     				stockItem.setPrice(price);
     				stockItem.setQuantity(quantity);
-    				log.info("Stock item created");
-    				model.getWarehouseTableModel().addItem(stockItem);
     				
+    				model.getWarehouseTableModel().addItem(stockItem);
     				log.info("Item added!");
     				
-            		}
+    				reset();
+    				}
+            	
             	else{
             		log.info("Wrong input");
+            		reset();
             		return;
             	}
             	
