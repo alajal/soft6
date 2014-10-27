@@ -23,6 +23,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import ee.ut.math.tvt.salessystem.domain.data.Order;
 import ee.ut.math.tvt.salessystem.ui.model.HistoryTabModel;
+import ee.ut.math.tvt.salessystem.ui.model.OrderedGoodsHistoryModel;
 import org.apache.log4j.Logger;
 
 import com.jgoodies.looks.windows.WindowsLookAndFeel;

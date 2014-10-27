@@ -239,11 +239,9 @@ public class PurchaseItemPanel<T> extends JPanel {
     
     public void populateComboBox() {
     	((DefaultComboBoxModel)this.nameComboBox.getModel()).removeAllElements();
-    	List<StockItem> allStockItems = model.getWarehouseTableModel()
-        .getTableRows(); // L: kysime koik tabeli read
+    	List<StockItem> allStockItems = model.getWarehouseTableModel().getTableRows(); // L: kysime koik tabeli read
 
-		for (StockItem stockItem : allStockItems) { // L: lisame koik nimed cb
-		    // nimekirja
+		for (StockItem stockItem : allStockItems) { // L: lisame koik nimed cb nimekirja
 		    this.nameComboBox.addItem(stockItem);
 		}
     }

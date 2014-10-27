@@ -149,10 +149,8 @@ public class PurchaseTab {
         log.info("Confirm button clicked");
         try {
             log.debug("Contents of the current basket:\n" + model.getCurrentPurchaseTableModel());
-            // domainController.submitCurrentPurchase(model.getCurrentPurchaseTableModel().getTableRows());
-            // endSale();
-            // model.getCurrentPurchaseTableModel().clear();
             List<SoldItem> soldItems = model.getCurrentPurchaseTableModel().getTableRows();
+
             PaymentFrame paymentPanel = new PaymentFrame(soldItems, this.domainController, this.model, this, getTotalOrderAmount(soldItems));
             paymentPanel.setVisible(true);
 

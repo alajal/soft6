@@ -58,4 +58,7 @@ public class HistoryTabModel extends SalesSystemTableModel<Order> {
     }
 
 
+    public Order getOrder(int row) {
+        return rows.get(row);
+    }
 }
