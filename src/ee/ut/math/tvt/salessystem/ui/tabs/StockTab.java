@@ -261,12 +261,12 @@ public class StockTab {
             if(emptyFields == 0){
             	log.info("Adding process started");
             	name = addNameField.getText().trim();
-            	//check if fields contain correct data (quantity and id should only consist of numbers 0-9 and price can also contain a ".")
-            	if(fields[0].getText().matches("^\\d+$") && fields[3].getText().matches("^\\d+$") && (fields[2].getText().matches(("[0-9]*\\.?[0-9]*")) || (fields[2].getText().matches(("^\\d+$"))))){
+            	//check if fields contain correct data (quantity and id should only consist of numbers 0-9 and price input is restricted to 0-2 decimal places)
+            	if(fields[0].getText().matches("^\\d+$") && fields[3].getText().matches("^\\d+$") && fields[2].getText().matches(("[0-9]*\\.?[0-9]{0,2}"))){
             		
             		id = Long.parseLong(addIdField.getText().trim());
             		quantity = Integer.parseInt(addQuantityField.getText().trim());
-            		price = PaymentFrame.round(Double.parseDouble(addPriceField.getText().trim()),2);
+            		price = Double.parseDouble(addPriceField.getText().trim());
             		
             		stockItem.setId(id);
     				stockItem.setName(name);
