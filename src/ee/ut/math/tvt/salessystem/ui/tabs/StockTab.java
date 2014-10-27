@@ -248,14 +248,18 @@ public class StockTab {
         try {
         	stockItem = new StockItem(id, name, price, quantity);
         	int emptyFields = 0;
-            log.info("Adding process started");
             JTextField [] fields = {addIdField, addNameField, addPriceField, addQuantityField};
             for (int i = 0; i < fields.length; i++) {
             	if(fields[i].getText().trim().isEmpty()){
             		emptyFields += 1;
             	}
             }
+            if(emptyFields > 0){
+            	log.info("Wrong input");
+            	reset();            	
+            }
             if(emptyFields == 0){
+            	log.info("Adding process started");
             	name = addNameField.getText().trim();
             	//check if fields contain correct data (quantity and id should only consist of numbers 0-9 and price can also contain a ".")
             	if(fields[0].getText().matches("^\\d+$") && fields[3].getText().matches("^\\d+$") && (fields[2].getText().matches(("[0-9]*\\.?[0-9]*")) || (fields[2].getText().matches(("^\\d+$"))))){
