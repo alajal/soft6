@@ -12,11 +12,24 @@
     <property name="main-class" value="ee.ut.math.tvt.soft6.Intro"/>
     <property name="team-name" value="soft6"/>
 	<property name="git.repo.name" value="github.com/alajal/soft6.git"/>
+	
+	<property name="lib.dir" value="${basedir}/lib"/>
+	
+	<!-- database variables -->
+	<property name="data.dir"	value="${basedir}/data"/>
+	<property name="db.file"	value="${data.dir}/POSdb"/>
+	<property name="db.alias"	value="POS"/>
+	<property name="db.url" 	value="jdbc:hsqldb:hsql://localhost/POS"/>
+	<property name="lib.hibernate.dir"   value="${lib.dir}/hibernate"/>
 
     <!-- Definitions of classpath variants used for different tasks -->
     <path id="compile.classpath">
-        <fileset dir="lib">
+        <fileset dir="${lib.dir}">
             <include name="*.jar"/>
+        </fileset>
+    	
+    	<fileset dir="${lib.hibernate.dir}">
+    		<include name="*.jar"/>
         </fileset>
     </path>
 
@@ -25,8 +38,12 @@
         <!-- configuration -->
         <pathelement location="${conf.dir}"/>
         <!--/etc-->
-        <fileset dir="lib">
+        <fileset dir="${lib.dir}">
             <include name="*.jar"/>
+        </fileset>
+
+    	<fileset dir="${lib.hibernate.dir}">
+    		<include name="*.jar"/>
         </fileset>
     </path>
 
@@ -158,6 +175,26 @@
 			<arg value="--tags"/>
 		</exec>
 		
+	</target>
+	
+	<target name="dbmanager" description="Start the HSQLDB manager">
+        <java
+            classname="org.hsqldb.util.DatabaseManagerSwing"
+            classpathref="run.classpath"
+            fork="yes"
+        >
+            <arg line="--user sa --url ${db.url}" />
+        </java>
+    </target>
+
+    <target name="startdb" description="Start the HSQLDB with the default params">
+        <java
+            classname="org.hsqldb.Server"
+            classpathref="run.classpath"
+            fork="yes"
+        >
+            <arg line="-database.0 '${db.file}' -dbname.0 '${db.alias}'" /> 
+        </java>
 	</target>
 
 
