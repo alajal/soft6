@@ -1,6 +1,7 @@
 package ee.ut.math.tvt.salessystem.ui;
 
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
+
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 import ee.ut.math.tvt.salessystem.ui.tabs.HistoryTabMaker;
@@ -11,12 +12,14 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 
 /**
  * Graphical user interface of the sales system.
@@ -34,7 +37,7 @@ public class SalesSystemUI extends JFrame {
     private StockTab stockTabMaker;
 
 
-    public SalesSystemUI(SalesDomainController domainController) {
+    public SalesSystemUI(final SalesDomainController domainController) {
         this.domainController = domainController;
         this.warehouseModel = new SalesSystemModel(domainController);
 
@@ -47,7 +50,13 @@ public class SalesSystemUI extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.exit(0);
+            	try {
+					domainController.endSession();
+				} catch (HibernateException e1) {
+					log.info("Database error on closing.");
+				} finally {
+					System.exit(0);
+				}
             }
         });
     }
