@@ -15,13 +15,13 @@ public class HibernateDataService {
 	// paring "from entity_name" tagastabki koik read, list() teeb selle veel listiks
 	public List<StockItem> getStockItems() {
 		@SuppressWarnings("unchecked")
-		List<StockItem> result = session.createQuery("from STOCKITEM").list();
+		List<StockItem> result = session.createQuery("from StockItem").list();
 		return result;
 	}
 	
 	public List<SoldItem> getSoldItems() {
 		@SuppressWarnings("unchecked")
-		List<SoldItem> result = session.createQuery("from SOLDITEM").list();
+		List<SoldItem> result = session.createQuery("from SoldItem").list();
 		return result;
 	}
 
