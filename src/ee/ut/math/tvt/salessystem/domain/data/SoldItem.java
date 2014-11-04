@@ -30,8 +30,15 @@ public class SoldItem implements Cloneable, DisplayableItem {
 	
 	@Column(name="ITEMPRICE")
     private double price;
+	
+	
 
-    public SoldItem(StockItem stockItem, int quantity) {
+    public SoldItem() {
+		super();
+	}
+
+
+	public SoldItem(StockItem stockItem, int quantity) {
         this.stockItem = stockItem;
         this.name = stockItem.getName();
         this.price = stockItem.getPrice();

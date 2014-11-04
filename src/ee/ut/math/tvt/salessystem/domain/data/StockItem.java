@@ -34,6 +34,8 @@ public class StockItem implements Cloneable, DisplayableItem {
 //	@OneToMany(mappedBy="stockItem")
 //	private Set<SoldItem> soldItems;
 
+	public StockItem() {
+	}
     public StockItem(Long barcodeId, String productName, String productDescription, double productPrice) {
         this.id = barcodeId;
         this.name = productName;
