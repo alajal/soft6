@@ -1,7 +1,6 @@
 package ee.ut.math.tvt.salessystem.ui.model;
 
 
-import ee.ut.math.tvt.salessystem.domain.data.Order;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 
 

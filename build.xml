@@ -11,21 +11,45 @@
     <property name="test.reports.dir" value="${build.dir}/reports/"/>
     <property name="main-class" value="ee.ut.math.tvt.soft6.Intro"/>
     <property name="team-name" value="soft6"/>
-	<property name="git.repo.name" value="github.com/alajal/soft6.git"/>
+    <property name="git.repo.name" value="github.com/alajal/soft6.git"/>
+
+    <property name="lib.dir" value="${basedir}/lib"/>
+    <!-- database variables -->
+    <property name="data.dir" value="${basedir}/data"/>
+    <property name="db.file" value="${data.dir}/POSdb"/>
+    <property name="db.alias" value="POS"/>
+    <property name="db.url" value="jdbc:hsqldb:hsql://localhost/POS"/>
+    <property name="lib.hibernate.dir" value="${lib.dir}/hibernate"/>
 
     <!-- Definitions of classpath variants used for different tasks -->
     <path id="compile.classpath">
         <fileset dir="lib">
             <include name="*.jar"/>
         </fileset>
+        <fileset dir="${lib.hibernate.dir}">
+            <include name="*.jar"/>
+        </fileset>
     </path>
+
+    <!--    <path id="run.classpath">
+            <pathelement location="${build.classes.dir}"/>
+            &lt;!&ndash; configuration &ndash;&gt;
+            <pathelement location="${conf.dir}"/>
+            &lt;!&ndash;/etc&ndash;&gt;
+            <fileset dir="lib">
+                <include name="*.jar"/>
+            </fileset>
+        </path>-->
 
     <path id="run.classpath">
         <pathelement location="${build.classes.dir}"/>
         <!-- configuration -->
         <pathelement location="${conf.dir}"/>
-        <!--/etc-->
-        <fileset dir="lib">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+
+        <fileset dir="${lib.hibernate.dir}">
             <include name="*.jar"/>
         </fileset>
     </path>
@@ -70,22 +94,23 @@
                 <include name="*"/>
                 <!-- tahame etc directory seest asju, mitte etc'd ennast (oleme juba etc dierctorys vt. fileseti parameetrit) -->
             </fileset>
-        	<zipgroupfileset dir="lib" includes="*.jar"/> <!-- vihje leidsin: http://stackoverflow.com/questions/1821803/creating-a-bundle-jar-with-ant -->
+            <zipgroupfileset dir="lib" includes="*.jar"/>
+            <!-- vihje leidsin: http://stackoverflow.com/questions/1821803/creating-a-bundle-jar-with-ant -->
             <manifest>
                 <attribute name="Main-Class" value="${main-class}"/>
             </manifest>
         </jar>
     </target>
-	
-	<target name="runc" depends="build" description="Run the application (console)">
-		<java classname="${main-class}" classpathref="run.classpath" fork="yes">
-			<arg value="console" />
-		</java>
-	</target>
+
+    <target name="runc" depends="build" description="Run the application (console)">
+        <java classname="${main-class}" classpathref="run.classpath" fork="yes">
+            <arg value="console"/>
+        </java>
+    </target>
 
 
     <target name="jrun" depends="dist" description="Opens intro window using the JAR file">
-        <java jar="${dist.dir}/${team-name}.jar" fork="yes" />
+        <java jar="${dist.dir}/${team-name}.jar" fork="yes"/>
     </target>
 
     <target name="increaseRevision" description="Increase revision and update version.properties.">
@@ -102,63 +127,83 @@
             <entry key="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
         </propertyfile>
     </target>
-	
-	<!-- Git targets -->
-	
-	<target name="git_commit" description="Commits to the local repository and pushes changes to the GitHub server">
-		<!-- add all unstaged stuff to index -->
-		<exec executable="git" dir="${basedir}">
-			<arg value="add"/>
-			<arg value="-A"/>
-		</exec>
-		
-		<!-- ask for commit comment from user and commit -->
+
+    <!-- Git targets -->
+
+    <target name="git_commit" description="Commits to the local repository and pushes changes to the GitHub server">
+        <!-- add all unstaged stuff to index -->
+        <exec executable="git" dir="${basedir}">
+            <arg value="add"/>
+            <arg value="-A"/>
+        </exec>
+
+        <!-- ask for commit comment from user and commit -->
         <!--##commit.... = input stuff-->
-		<input 
-			message="Enter comments for commit."
-			addproperty="commit.comment"
-		/>
+        <input
+                message="Enter comments for commit."
+                addproperty="commit.comment"
+                />
         <!--${..} on muutuja, mille korral ant asendab muutuja selle v22rtusega-->
         <!-- dry-run option can be used to obtain a summary of what is included by any of-->
         <!--the above for the next commit by giving the same set of parameters-->
-		<exec executable="git" dir="${basedir}">
-			<arg value="commit"/>
+        <exec executable="git" dir="${basedir}">
+            <arg value="commit"/>
             <!--<arg value="-dry-run"/>-->
-			<arg value="-m ${commit.comment}"/>
-		</exec>
+            <arg value="-m ${commit.comment}"/>
+        </exec>
 
-		<!-- ask user for username and passwd, push to repo -->
-		<input message="username" addproperty="username"/>
-		<input message="password" addproperty="password"/>
-		<exec executable="git" dir="${basedir}">
-			<arg value="push"/>
-			<arg value="https://${username}:${password}@${git.repo.name}"/>
-		</exec>
-		
-	</target>
-	
-	<target name="git_tag" description="Creates a tag and push it to GitHub">
-		<!-- Create a tag, ask for name and comment -->
-		<input message="tag name" addproperty="tag.name"/>
-		<input message="tag comment" addproperty="tag.comment"/>
-		<exec executable="git" dir="${basedir}">
-			<arg value="tag"/>
-			<arg value="-a"/>
-			<arg value="${tag.name}"/>
-			<arg value="-m"/>
-			<arg value="${tag.comment}"/>
-		</exec>
-		
-		<!-- ask user for username and passwd, push to repo -->
-		<input message="username" addproperty="username"/>
-		<input message="password" addproperty="password"/>
-		<exec executable="git" dir="${basedir}">
-			<arg value="push"/>
-			<arg value="https://${username}:${password}@${git.repo.name}"/>
-			<arg value="--tags"/>
-		</exec>
-		
-	</target>
+        <!-- ask user for username and passwd, push to repo -->
+        <input message="username" addproperty="username"/>
+        <input message="password" addproperty="password"/>
+        <exec executable="git" dir="${basedir}">
+            <arg value="push"/>
+            <arg value="https://${username}:${password}@${git.repo.name}"/>
+        </exec>
+
+    </target>
+
+    <target name="git_tag" description="Creates a tag and push it to GitHub">
+        <!-- Create a tag, ask for name and comment -->
+        <input message="tag name" addproperty="tag.name"/>
+        <input message="tag comment" addproperty="tag.comment"/>
+        <exec executable="git" dir="${basedir}">
+            <arg value="tag"/>
+            <arg value="-a"/>
+            <arg value="${tag.name}"/>
+            <arg value="-m"/>
+            <arg value="${tag.comment}"/>
+        </exec>
+
+        <!-- ask user for username and passwd, push to repo -->
+        <input message="username" addproperty="username"/>
+        <input message="password" addproperty="password"/>
+        <exec executable="git" dir="${basedir}">
+            <arg value="push"/>
+            <arg value="https://${username}:${password}@${git.repo.name}"/>
+            <arg value="--tags"/>
+        </exec>
+
+    </target>
+
+    <target name="dbmanager" description="Start the HSQLDB manager">
+        <java
+                classname="org.hsqldb.util.DatabaseManagerSwing"
+                classpathref="run.classpath"
+                fork="yes"
+                >
+            <arg line="--user sa --url ${db.url}"/>
+        </java>
+    </target>
+
+    <target name="startdb" description="Start the HSQLDB with the default params">
+        <java
+                classname="org.hsqldb.Server"
+                classpathref="run.classpath"
+                fork="yes"
+                >
+            <arg line="-database.0 '${db.file}' -dbname.0 '${db.alias}'"/>
+        </java>
+    </target>
 
 
 </project>

@@ -34,7 +34,7 @@ public class SalesSystemUI extends JFrame {
     private StockTab stockTabMaker;
 
 
-    public SalesSystemUI(SalesDomainController domainController) {
+    public SalesSystemUI(final SalesDomainController domainController) {
         this.domainController = domainController;
         this.warehouseModel = new SalesSystemModel(domainController);
 
@@ -47,6 +47,7 @@ public class SalesSystemUI extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                domainController.endSession();
                 System.exit(0);
             }
         });

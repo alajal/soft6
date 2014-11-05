@@ -100,7 +100,8 @@ public class ConsoleUI {
         if (commands[0].equals("h"))
             printUsage();
         else if (commands[0].equals("q"))
-            System.exit(0);
+            salesDomainController.endSession();
+            //System.exit(0);
         else if (commands[0].equals("w"))
             showStock(warehouse);
         else if (commands[0].equals("c"))

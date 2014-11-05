@@ -90,7 +90,9 @@ public class HistoryTabMaker {
         panel.setLayout(new BorderLayout());
 
         OrderedGoodsHistoryModel orderedGoodsHistoryModel = model.getOrderedGoodsHistoryModel();
+
         orderedGoodsHistoryModel.clear();
+
         JTable itemTable = new JTable(orderedGoodsHistoryModel);
         for (SoldItem item : order.getOrderedItems()){
             orderedGoodsHistoryModel.addItemtoTable(item);

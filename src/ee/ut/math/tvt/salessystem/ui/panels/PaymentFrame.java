@@ -205,18 +205,17 @@ public class PaymentFrame extends JFrame {
 
             if (paymentAmt >= orderAmt) {
                 if (decimalPlaces <= 2) {
+                    this.domainController.submitCurrentPurchase(soldItems);
                     log.info("Sale confirmed and payment accepted.");
 
                     //HistoryTabModel comes in
                     HistoryTabModel historyTabModel = model.getHistoryTabModel();
                     Order order = new Order(soldItems, new Date());
                     historyTabModel.addData(order);
-
-                    this.domainController.submitCurrentPurchase(soldItems);
                     model.getCurrentPurchaseTableModel().clear();
 
                     this.setVisible(false);
-                    purchaseTab.endSale();  // L: sooo ugly
+                    purchaseTab.endSale();
 
                 } else {
                     JOptionPane.showMessageDialog(null, "Too many decimal places!");

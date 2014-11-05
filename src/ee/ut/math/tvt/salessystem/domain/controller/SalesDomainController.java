@@ -37,4 +37,6 @@ public interface SalesDomainController {
      */
     public List<StockItem> loadWarehouseState();
 
+    public void endSession();
+
 }
