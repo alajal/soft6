@@ -6,24 +6,26 @@
     <property name="build.classes.dir" value="${build.dir}/classes"/>
     <property name="src.dir" value="${basedir}/src"/>
     <property name="dist.dir" value="${build.dir}/jar"/>
-    <property name="conf.dir" value="${basedir}/etc"/>
+    <property name="etc.dir" value="${basedir}/etc"/>
+    <property name="conf.dir" value="${basedir}/conf"/>
     <property name="doc.dir" value="${build.dir}/doc"/>
     <property name="test.reports.dir" value="${build.dir}/reports/"/>
     <property name="main-class" value="ee.ut.math.tvt.soft6.Intro"/>
     <property name="team-name" value="soft6"/>
-    <property name="git.repo.name" value="github.com/alajal/soft6.git"/>
-
-    <property name="lib.dir" value="${basedir}/lib"/>
-    <!-- database variables -->
-    <property name="data.dir" value="${basedir}/data"/>
-    <property name="db.file" value="${data.dir}/POSdb"/>
-    <property name="db.alias" value="POS"/>
-    <property name="db.url" value="jdbc:hsqldb:hsql://localhost/POS"/>
-    <property name="lib.hibernate.dir" value="${lib.dir}/hibernate"/>
+	<property name="git.repo.name" value="github.com/alajal/soft6.git"/>
+	
+	<property name="lib.dir" value="${basedir}/lib"/>
+	
+	<!-- database variables -->
+	<property name="data.dir"	value="${basedir}/data"/>
+	<property name="db.file"	value="${data.dir}/POSdb"/>
+	<property name="db.alias"	value="POS"/>
+	<property name="db.url" 	value="jdbc:hsqldb:hsql://localhost/POS"/>
+	<property name="lib.hibernate.dir"   value="${lib.dir}/hibernate"/>
 
     <!-- Definitions of classpath variants used for different tasks -->
     <path id="compile.classpath">
-        <fileset dir="lib">
+        <fileset dir="${lib.dir}">
             <include name="*.jar"/>
         </fileset>
         <fileset dir="${lib.hibernate.dir}">
@@ -45,12 +47,14 @@
         <pathelement location="${build.classes.dir}"/>
         <!-- configuration -->
         <pathelement location="${conf.dir}"/>
+    	<pathelement location="${etc.dir}"/>
+        <!--/etc-->
         <fileset dir="${lib.dir}">
             <include name="*.jar"/>
         </fileset>
 
-        <fileset dir="${lib.hibernate.dir}">
-            <include name="*.jar"/>
+    	<fileset dir="${lib.hibernate.dir}">
+    		<include name="*.jar"/>
         </fileset>
     </path>
 
@@ -90,7 +94,7 @@
         <jar destfile="${dist.dir}/${team-name}.jar"
              basedir="${build.classes.dir}"><!-- loome jar faili dist'i sisse, olemas on juba class failid, lisame muud, selleks defineerime need filesetis -->
             <fileset
-                    dir="${conf.dir}">  <!-- valik faile / etc kausta nimi, sest sealt hakkame võtma teisi faile, mitte basedir'ist-->
+                    dir="${etc.dir}">  <!-- valik faile / etc kausta nimi, sest sealt hakkame võtma teisi faile, mitte basedir'ist-->
                 <include name="*"/>
                 <!-- tahame etc directory seest asju, mitte etc'd ennast (oleme juba etc dierctorys vt. fileseti parameetrit) -->
             </fileset>
@@ -101,12 +105,12 @@
             </manifest>
         </jar>
     </target>
-
-    <target name="runc" depends="build" description="Run the application (console)">
-        <java classname="${main-class}" classpathref="run.classpath" fork="yes">
-            <arg value="console"/>
-        </java>
-    </target>
+	
+	<target name="runc" depends="build" description="Run the application (console)">
+		<java classname="${main-class}" classpathref="run.classpath" fork="yes">
+			<arg value="console" />
+		</java>
+	</target>
 
 
     <target name="jrun" depends="dist" description="Opens intro window using the JAR file">
@@ -114,15 +118,15 @@
     </target>
 
     <target name="increaseRevision" description="Increase revision and update version.properties.">
-        <propertyfile file="${conf.dir}/version.properties" comment="Version properties">
+        <propertyfile file="${etc.dir}/version.properties" comment="Version properties">
             <!-- increases revision number by 1 -->
             <entry key="build.revision.number" type="int" default="0" value="1" operation="+"/>
         </propertyfile>
 
         <!-- absolutely no idea why this is needed, doesn't work otherwise -->
-        <property file="${conf.dir}/version.properties"/>
+        <property file="${etc.dir}/version.properties"/>
 
-        <propertyfile file="${conf.dir}/version.properties">
+        <propertyfile file="${etc.dir}/version.properties">
             <!-- updates build number -->
             <entry key="build.number" value="${build.major.number}.${build.minor.number}.${build.revision.number}"/>
         </propertyfile>
@@ -152,58 +156,58 @@
             <arg value="-m ${commit.comment}"/>
         </exec>
 
-        <!-- ask user for username and passwd, push to repo -->
-        <input message="username" addproperty="username"/>
-        <input message="password" addproperty="password"/>
-        <exec executable="git" dir="${basedir}">
-            <arg value="push"/>
-            <arg value="https://${username}:${password}@${git.repo.name}"/>
-        </exec>
-
-    </target>
-
-    <target name="git_tag" description="Creates a tag and push it to GitHub">
-        <!-- Create a tag, ask for name and comment -->
-        <input message="tag name" addproperty="tag.name"/>
-        <input message="tag comment" addproperty="tag.comment"/>
-        <exec executable="git" dir="${basedir}">
-            <arg value="tag"/>
-            <arg value="-a"/>
-            <arg value="${tag.name}"/>
-            <arg value="-m"/>
-            <arg value="${tag.comment}"/>
-        </exec>
-
-        <!-- ask user for username and passwd, push to repo -->
-        <input message="username" addproperty="username"/>
-        <input message="password" addproperty="password"/>
-        <exec executable="git" dir="${basedir}">
-            <arg value="push"/>
-            <arg value="https://${username}:${password}@${git.repo.name}"/>
-            <arg value="--tags"/>
-        </exec>
-
-    </target>
-
-    <target name="dbmanager" description="Start the HSQLDB manager">
+		<!-- ask user for username and passwd, push to repo -->
+		<input message="username" addproperty="username"/>
+		<input message="password" addproperty="password"/>
+		<exec executable="git" dir="${basedir}">
+			<arg value="push"/>
+			<arg value="https://${username}:${password}@${git.repo.name}"/>
+		</exec>
+		
+	</target>
+	
+	<target name="git_tag" description="Creates a tag and push it to GitHub">
+		<!-- Create a tag, ask for name and comment -->
+		<input message="tag name" addproperty="tag.name"/>
+		<input message="tag comment" addproperty="tag.comment"/>
+		<exec executable="git" dir="${basedir}">
+			<arg value="tag"/>
+			<arg value="-a"/>
+			<arg value="${tag.name}"/>
+			<arg value="-m"/>
+			<arg value="${tag.comment}"/>
+		</exec>
+		
+		<!-- ask user for username and passwd, push to repo -->
+		<input message="username" addproperty="username"/>
+		<input message="password" addproperty="password"/>
+		<exec executable="git" dir="${basedir}">
+			<arg value="push"/>
+			<arg value="https://${username}:${password}@${git.repo.name}"/>
+			<arg value="--tags"/>
+		</exec>
+		
+	</target>
+	
+	<target name="dbmanager" description="Start the HSQLDB manager">
         <java
-                classname="org.hsqldb.util.DatabaseManagerSwing"
-                classpathref="run.classpath"
-                fork="yes"
-                >
-            <arg line="--user sa --url ${db.url}"/>
+            classname="org.hsqldb.util.DatabaseManagerSwing"
+            classpathref="run.classpath"
+            fork="yes"
+        >
+            <arg line="--user sa --url ${db.url}" />
         </java>
     </target>
 
     <target name="startdb" description="Start the HSQLDB with the default params">
         <java
-                classname="org.hsqldb.Server"
-                classpathref="run.classpath"
-                fork="yes"
-                >
-            <arg line="-database.0 '${db.file}' -dbname.0 '${db.alias}'"/>
+            classname="org.hsqldb.Server"
+            classpathref="run.classpath"
+            fork="yes"
+        >
+            <arg line="-database.0 '${db.file}' -dbname.0 '${db.alias}'" /> 
         </java>
-    </target>
+	</target>
 
 
 </project>

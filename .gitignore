@@ -6,6 +6,8 @@ bin
 docs
 out
 dist
+data/POSdb.lck
+data/POSdb.log
 
 .project
 .classpath

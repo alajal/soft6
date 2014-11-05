@@ -36,7 +36,12 @@ public interface SalesDomainController {
      * @return List of ${link ee.ut.math.tvt.salessystem.domain.data.StockItem}s.
      */
     public List<StockItem> loadWarehouseState();
-
+    
+    /**
+     * Closes current database session
+     */
     public void endSession();
+
+
 
 }

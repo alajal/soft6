@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
 import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
@@ -83,6 +84,7 @@ public class ConsoleUI {
         System.out.println("a IDX NR \tAdd NR of stock item with index IDX to the cart");
         System.out.println("p\t\tPurchase the shopping cart");
         System.out.println("r\t\tReset the shopping cart");
+        System.out.println("q\t\tEnd DB session and exit console application");
         System.out.println("-------------------------");
     }
 
@@ -99,9 +101,15 @@ public class ConsoleUI {
 
         if (commands[0].equals("h"))
             printUsage();
-        else if (commands[0].equals("q"))
-            salesDomainController.endSession();
-            //System.exit(0);
+        else if (commands[0].equals("q")){
+        	try {
+				salesDomainController.endSession();
+			} catch (HibernateException e) {
+				System.out.println("Database error on closing!");
+			} finally {
+				System.exit(0);
+			}
+        }
         else if (commands[0].equals("w"))
             showStock(warehouse);
         else if (commands[0].equals("c"))

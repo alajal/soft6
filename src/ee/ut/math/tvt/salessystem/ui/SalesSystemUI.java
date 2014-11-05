@@ -17,6 +17,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.Logger;
+import org.hibernate.HibernateException;
 
 /**
  * Graphical user interface of the sales system.
@@ -47,8 +48,13 @@ public class SalesSystemUI extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                domainController.endSession();
-                System.exit(0);
+            	try {
+					domainController.endSession();
+				} catch (HibernateException e1) {
+					log.info("Database error on closing.");
+				} finally {
+					System.exit(0);
+				}
             }
         });
     }
