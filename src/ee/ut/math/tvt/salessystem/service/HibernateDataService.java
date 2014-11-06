@@ -3,6 +3,7 @@ package ee.ut.math.tvt.salessystem.service;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
@@ -23,6 +24,12 @@ public class HibernateDataService {
 		@SuppressWarnings("unchecked")
 		List<SoldItem> result = session.createQuery("from SoldItem").list();
 		return result;
+	}
+	
+	public void addStockItem(StockItem stockItem) {
+		Transaction trans = session.beginTransaction();
+		session.save(stockItem);
+		trans.commit();
 	}
 
 }

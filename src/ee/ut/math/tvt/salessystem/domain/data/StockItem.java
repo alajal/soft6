@@ -31,8 +31,8 @@ public class StockItem implements Cloneable, DisplayableItem {
     private int quantity;
 	
 	// L: added solditems field for mapping, like in the example..needed?
-//	@OneToMany(mappedBy="stockItem")
-//	private Set<SoldItem> soldItems;
+	@OneToMany(mappedBy="stockItem")
+	private Set<SoldItem> soldItems;
 
 	public StockItem() {
 	}

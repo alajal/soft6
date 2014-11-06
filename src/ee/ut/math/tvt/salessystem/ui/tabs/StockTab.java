@@ -1,11 +1,11 @@
 package ee.ut.math.tvt.salessystem.ui.tabs;
 
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.service.HibernateDataService;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 
 
 import ee.ut.math.tvt.salessystem.ui.model.StockTableModel;
-import ee.ut.math.tvt.salessystem.ui.panels.PaymentFrame;
 
 import org.apache.log4j.Logger;
 
@@ -275,6 +275,10 @@ public class StockTab {
     				
     				model.getWarehouseTableModel().addItem(stockItem);
     				log.info("Item added!");
+    				
+    				HibernateDataService service = new HibernateDataService();
+    				service.addStockItem(stockItem);
+    				log.info("Item saved to database");
     				
     				reset();
     				}
