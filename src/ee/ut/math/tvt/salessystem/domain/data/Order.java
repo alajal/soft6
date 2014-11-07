@@ -32,6 +32,9 @@ public class Order implements DisplayableItem {
     public Order(List<SoldItem> orderedItems, Date dateAndTimeOfTheOrder) {
         this.orderedItems = orderedItems;
         this.dateAndTimeOfTheOrder = dateAndTimeOfTheOrder;
+        for(SoldItem soldItem:orderedItems) {
+            soldItem.setOrder(this);
+        }
     }
 
 

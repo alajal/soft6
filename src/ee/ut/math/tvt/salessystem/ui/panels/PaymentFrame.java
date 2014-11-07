@@ -219,7 +219,6 @@ public class PaymentFrame extends JFrame {
                     log.info("Order added to database");
                     
                     for (SoldItem soldItem : soldItems) {
-                    	soldItem.setOrder(order);
 						service.addSoldItem(soldItem);
 					}
 
