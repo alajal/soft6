@@ -22,7 +22,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import ee.ut.math.tvt.salessystem.domain.data.Order;
+import ee.ut.math.tvt.salessystem.service.HibernateDataService;
 import ee.ut.math.tvt.salessystem.ui.model.HistoryTabModel;
+
 import org.apache.log4j.Logger;
 
 import com.jgoodies.looks.windows.WindowsLookAndFeel;
@@ -211,8 +213,17 @@ public class PaymentFrame extends JFrame {
                     HistoryTabModel historyTabModel = model.getHistoryTabModel();
                     Order order = new Order(soldItems, new Date());
                     historyTabModel.addData(order);
-                    model.getCurrentPurchaseTableModel().clear();
+                    
+                    HibernateDataService service = new HibernateDataService();
+                    service.addOrder(order);
+                    log.info("Order added to database");
+                    
+                    for (SoldItem soldItem : soldItems) {
+                    	soldItem.setOrder(order);
+						service.addSoldItem(soldItem);
+					}
 
+                    model.getCurrentPurchaseTableModel().clear();
                     this.setVisible(false);
                     purchaseTab.endSale();
 

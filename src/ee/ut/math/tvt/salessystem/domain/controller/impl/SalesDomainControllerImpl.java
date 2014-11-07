@@ -31,6 +31,8 @@ public class SalesDomainControllerImpl implements SalesDomainController {
 
             if (newQuantity >= 0) {
                 stockItem.setQuantity(newQuantity);
+                service.updateStockItemQuantity(stockItem, newQuantity);
+                System.out.println("Stockitem quantity decreased.");
             } else {
                 throw new VerificationFailedException("More sold items than in stock!");
             }
