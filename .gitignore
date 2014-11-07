@@ -8,6 +8,8 @@ out
 dist
 data/POSdb.lck
 data/POSdb.log
+data/.fuse_*
+data/POSdb.properties
 
 .project
 .classpath

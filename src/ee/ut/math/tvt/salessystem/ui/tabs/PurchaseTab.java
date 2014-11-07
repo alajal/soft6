@@ -8,9 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.apache.log4j.Logger;
 
@@ -29,10 +27,11 @@ public class PurchaseTab {
     private static final Logger log = Logger.getLogger(PurchaseTab.class);
     private final SalesDomainController domainController;
     private JButton newPurchase;
-    private JButton submitPurchase;
+    private JButton confirmPurchase;
     private JButton cancelPurchase;
     private PurchaseItemPanel purchasePane;
     private SalesSystemModel model;
+
 
     public PurchaseTab(SalesDomainController controller, SalesSystemModel model) {
         this.domainController = controller;
@@ -67,13 +66,13 @@ public class PurchaseTab {
 
         // Initialize the buttons
         newPurchase = createNewPurchaseButton();
-        submitPurchase = createConfirmButton();
+        confirmPurchase = createConfirmButton();
         cancelPurchase = createCancelButton();
 
         // Add the buttons to the panel, using GridBagConstraints we defined
         // above
         panel.add(newPurchase, gc);
-        panel.add(submitPurchase, gc);
+        panel.add(confirmPurchase, gc);
         panel.add(cancelPurchase, gc);
 
         return panel;
@@ -147,17 +146,19 @@ public class PurchaseTab {
 
     protected void submitPurchaseButtonClicked() {
         log.info("Confirm button clicked");
-        try {
-            log.debug("Contents of the current basket:\n" + model.getCurrentPurchaseTableModel());
-            List<SoldItem> soldItems = model.getCurrentPurchaseTableModel().getTableRows();
-
-            PaymentFrame paymentPanel = new PaymentFrame(soldItems, this.domainController, this.model, this, getTotalOrderAmount(soldItems));
-            paymentPanel.setVisible(true);
-
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        List<SoldItem> soldItems = model.getCurrentPurchaseTableModel().getTableRows();
+        if (soldItems.size() != 0) {
+            try {
+                log.debug("Contents of the current basket:\n" + model.getCurrentPurchaseTableModel());
+                PaymentFrame paymentPanel = new PaymentFrame(soldItems, this.domainController, this.model, this, getTotalOrderAmount(soldItems));
+                paymentPanel.setVisible(true);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+            // catch (VerificationFailedException e1) { log.error(e1.getMessage()); }
+        } else {
+            JOptionPane.showMessageDialog(null, "There are no items chosen!");
         }
-        // catch (VerificationFailedException e1) { log.error(e1.getMessage()); }
     }
 
     private double getTotalOrderAmount(List<SoldItem> soldItems) {
@@ -179,10 +180,10 @@ public class PurchaseTab {
         purchasePane.populateComboBox();
 
         purchasePane.setEnabled(true);
-        submitPurchase.setEnabled(true);
+        confirmPurchase.setEnabled(true);
         cancelPurchase.setEnabled(true);
         newPurchase.setEnabled(false);
-        
+
     }
 
     // switch UI to the state that allows to initiate new purchase
@@ -190,13 +191,13 @@ public class PurchaseTab {
         purchasePane.reset();
 
         cancelPurchase.setEnabled(false);
-        submitPurchase.setEnabled(false);
+        confirmPurchase.setEnabled(false);
         newPurchase.setEnabled(true);
         purchasePane.setEnabled(false);
     }
 
 	/*
-	 * === Next methods just create the layout constraints objects that control
+     * === Next methods just create the layout constraints objects that control
 	 * the the layout of different elements in the purchase tab. These
 	 * definitions are brought out here to separate contents from layout, and
 	 * keep the methods that actually create the components shorter and cleaner.

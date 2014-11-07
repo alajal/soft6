@@ -32,12 +32,6 @@ import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 public class PurchaseItemPanel<T> extends JPanel {
 
     private static final long serialVersionUID = 1L;
-
-    // Text field on the dialogPane
-
-    // private JTextField barCodeField;
-
-    // Andrey: Vahetasin JTextField asemele JComboBox
     private JComboBox<StockItem> nameComboBox;
     private JTextField quantityField;
     private JTextField nameField;
@@ -91,11 +85,6 @@ public class PurchaseItemPanel<T> extends JPanel {
         panel.setBorder(BorderFactory.createTitledBorder("Product"));
 
         // Initialize the textfields
-
-        // Andrey: tegin barCodeField JComboBox
-        // See lahendus on jama, peaks votma automaatselt laoseisu, vaid ei
-        // leidnud hetkel kust, seega on hetkel kasitsi
-        // L: fixed
         // final DefaultComboBoxModel<String> namesForComboBox = new
         // DefaultComboBoxModel<String>();
 
@@ -227,23 +216,21 @@ public class PurchaseItemPanel<T> extends JPanel {
     /**
      * Reset dialog fields.
      */
-    // Andrey: hetkel kommisin valja barCode kuna ei tea, mis sellega teha
     public void reset() {
-        // barCodeField.setText("");
         nameComboBox.setSelectedIndex(-1); // L: tyhi
         //fillDialogFields();
         quantityField.setText("1");
         nameField.setText("");
         priceField.setText("");
     }
-    
-    public void populateComboBox() {
-    	((DefaultComboBoxModel)this.nameComboBox.getModel()).removeAllElements();
-    	List<StockItem> allStockItems = model.getWarehouseTableModel().getTableRows(); // L: kysime koik tabeli read
 
-		for (StockItem stockItem : allStockItems) { // L: lisame koik nimed cb nimekirja
-		    this.nameComboBox.addItem(stockItem);
-		}
+    public void populateComboBox() {
+        ((DefaultComboBoxModel) this.nameComboBox.getModel()).removeAllElements();
+        List<StockItem> allStockItems = model.getWarehouseTableModel().getTableRows(); // L: kysime koik tabeli read
+
+        for (StockItem stockItem : allStockItems) { // L: lisame koik nimed cb nimekirja
+            this.nameComboBox.addItem(stockItem);
+        }
     }
 
 	/*
