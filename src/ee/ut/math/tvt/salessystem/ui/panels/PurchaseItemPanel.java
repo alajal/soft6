@@ -19,8 +19,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import org.apache.log4j.Logger;
+
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 
@@ -31,6 +34,7 @@ import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
  */
 public class PurchaseItemPanel<T> extends JPanel {
 
+	private static final Logger log = Logger.getLogger(PurchaseItemPanel.class); 
     private static final long serialVersionUID = 1L;
     private JComboBox<StockItem> nameComboBox;
     private JTextField quantityField;
@@ -199,7 +203,12 @@ public class PurchaseItemPanel<T> extends JPanel {
             } catch (NumberFormatException ex) {
                 quantity = 1;
             }
-            model.getCurrentPurchaseTableModel().addStockItem(new SoldItem(stockItem, quantity));
+            
+            try {
+				model.getCurrentPurchaseTableModel().addItem(new SoldItem(stockItem, quantity));
+			} catch (VerificationFailedException e) {
+				log.info(e.getMessage());
+			}
         }
     }
 
@@ -224,7 +233,8 @@ public class PurchaseItemPanel<T> extends JPanel {
         priceField.setText("");
     }
 
-    public void populateComboBox() {
+    @SuppressWarnings("rawtypes")
+	public void populateComboBox() {
         ((DefaultComboBoxModel) this.nameComboBox.getModel()).removeAllElements();
         List<StockItem> allStockItems = model.getWarehouseTableModel().getTableRows(); // L: kysime koik tabeli read
 

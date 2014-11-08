@@ -29,7 +29,8 @@ public class PurchaseTab {
     private JButton newPurchase;
     private JButton confirmPurchase;
     private JButton cancelPurchase;
-    private PurchaseItemPanel purchasePane;
+    @SuppressWarnings("rawtypes")
+	private PurchaseItemPanel purchasePane;
     private SalesSystemModel model;
 
 
@@ -39,7 +40,8 @@ public class PurchaseTab {
     }
 
 
-    public Component createPurchaseTab() {
+    @SuppressWarnings("rawtypes")
+	public Component createPurchaseTab() {
         JPanel panel = new JPanel();
 
         // Layout

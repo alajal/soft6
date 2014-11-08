@@ -7,7 +7,12 @@ import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 public class OrderedGoodsHistoryModel extends SalesSystemTableModel<SoldItem>{
 
 
-    public OrderedGoodsHistoryModel() {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public OrderedGoodsHistoryModel() {
         super(new String[]{"Id", "Name", "Price", "Quantity", "Sum"});
 
     }

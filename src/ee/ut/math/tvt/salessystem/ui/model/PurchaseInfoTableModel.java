@@ -1,9 +1,11 @@
 package ee.ut.math.tvt.salessystem.ui.model;
 
+import java.util.NoSuchElementException;
+
 import org.apache.log4j.Logger;
 
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
-import ee.ut.math.tvt.salessystem.ui.SalesSystemUI;
+import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 
 /**
  * Purchase history details model.
@@ -54,13 +56,29 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
     }
 
 
-    public void addStockItem(final SoldItem item) {
+    public void addItem(final SoldItem soldItem) throws VerificationFailedException {
         /**
-         * XXX In case such stockItem already exists increase the quantity of the existing stock.
+         * L: In case such stockItem already exists increase the quantity of the existing stock.
+         * If trying to add more items than in stock, throws VerificationFailedException
          */
 
-        rows.add(item);
-        log.debug("Added " + item.getName() + " quantity of " + item.getQuantity());
+    	try {
+            SoldItem item = getItemById(soldItem.getId());
+            
+            if (item.getQuantity() + soldItem.getQuantity() > soldItem.getStockItem().getQuantity()) {
+        		throw new VerificationFailedException("Cannot add more items to basket than in warehouse!");
+        	}
+            
+            item.setQuantity(item.getQuantity() + soldItem.getQuantity());
+            log.debug("Found existing item " + soldItem.getName() + " increased quantity by " + soldItem.getQuantity());
+        } catch (NoSuchElementException e) {
+        	if (soldItem.getQuantity() > soldItem.getStockItem().getQuantity()) {
+        		throw new VerificationFailedException("Cannot add more items to basket than in warehouse!");
+        	}
+        	
+            rows.add(soldItem);
+            log.debug("Added " + soldItem.getName() + " quantity of " + soldItem.getQuantity());
+        }
         fireTableDataChanged();
     }
 }
