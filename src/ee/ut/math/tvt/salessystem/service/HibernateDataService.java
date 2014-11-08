@@ -2,6 +2,7 @@ package ee.ut.math.tvt.salessystem.service;
 
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -27,38 +28,60 @@ public class HibernateDataService {
 		return result;
 	}
 	
+    @SuppressWarnings("unchecked")
+    public List<Order> getOrders() {
+        List<Order> orders = session.createQuery("FROM Order").list();
+        return orders;
+    }
+	
 	public void addStockItem(StockItem stockItem) {
-		Transaction trans = session.beginTransaction();
-		session.save(stockItem);
-		trans.commit();
+		Transaction trans = null;
+		try {
+			trans = session.beginTransaction();
+			session.save(stockItem);
+			trans.commit();
+		} catch (HibernateException e) {
+			if (trans != null) trans.rollback();
+			e.printStackTrace();
+		}
 	}
 	
 	public void addOrder(Order order) {
-		Transaction trans = session.beginTransaction();
-		session.save(order);
-		trans.commit();
+		Transaction trans = null;
+		try {
+			trans = session.beginTransaction();
+			session.save(order);
+			trans.commit();
+		} catch (HibernateException e) {
+			if (trans != null) trans.rollback();
+			e.printStackTrace();
+		}
 	}
 	
 	public void addSoldItem(SoldItem soldItem) {
-		Transaction trans = session.beginTransaction();
-		session.save(soldItem);
-		trans.commit();
+		Transaction trans = null;
+		try {
+			trans = session.beginTransaction();
+			session.save(soldItem);
+			trans.commit();
+		} catch (HibernateException e) {
+			if (trans != null) trans.rollback();
+			e.printStackTrace();
+		}
 	}
 	
 	public void updateStockItemQuantity(StockItem stockItem, int itemQuantity) {
-		Transaction trans = session.beginTransaction();
-		StockItem stockItemFromTable = (StockItem)session.get(StockItem.class, stockItem.getId());
-		stockItemFromTable.setQuantity(itemQuantity);
-		session.update(stockItemFromTable);
-		
-		trans.commit();
+		Transaction trans = null;
+		try {
+			trans = session.beginTransaction();
+			StockItem stockItemFromTable = (StockItem)session.get(StockItem.class, stockItem.getId());
+			stockItemFromTable.setQuantity(itemQuantity);
+			session.update(stockItemFromTable);
+			trans.commit();
+		} catch (HibernateException e) {
+			if (trans != null) trans.rollback();
+			e.printStackTrace();
+		}
 	}
 
-    @SuppressWarnings("unchecked")
-    public List<Order> getOrders() {
-        Transaction trans = session.beginTransaction();
-        List<Order> orders = session.createQuery("FROM Order").list();
-        trans.commit();
-        return orders;
-    }
 }
