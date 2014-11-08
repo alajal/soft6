@@ -54,4 +54,11 @@ public class HibernateDataService {
 		trans.commit();
 	}
 
+    @SuppressWarnings("unchecked")
+    public List<Order> getOrders() {
+        Transaction trans = session.beginTransaction();
+        List<Order> orders = session.createQuery("FROM Order").list();
+        trans.commit();
+        return orders;
+    }
 }

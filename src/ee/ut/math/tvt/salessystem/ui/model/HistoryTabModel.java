@@ -23,6 +23,10 @@ public class HistoryTabModel extends SalesSystemTableModel<Order> {
         fireTableDataChanged();
     }
 
+    public void populateWithHistoryData() {
+
+    }
+
 
     @Override
     protected Object getColumnValue(Order order, int columnIndex) {

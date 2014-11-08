@@ -13,6 +13,7 @@ public class OrderedGoodsHistoryModel extends SalesSystemTableModel<SoldItem>{
     }
 
     public void addItemtoTable(SoldItem item){
+
         rows.add(item);
         fireTableDataChanged();
     }
