@@ -23,8 +23,9 @@ public class HistoryTabModel extends SalesSystemTableModel<Order> {
         fireTableDataChanged();
     }
 
-    public void populateWithHistoryData() {
-
+    public void populateWithHistoryData(final List<Order> data) {
+    	rows.clear();
+        rows.addAll(data);
     }
 
 
