@@ -58,10 +58,9 @@ public class PurchaseInfoTableModel extends SalesSystemTableModel<SoldItem> {
 
     public void addItem(final SoldItem soldItem) throws VerificationFailedException {
         /**
-         * L: In case such stockItem already exists increase the quantity of the existing stock.
+         * In case such stockItem already exists increase the quantity of the existing stock.
          * If trying to add more items than in stock, throws VerificationFailedException
          */
-        item.getQuantity();
 
     	try {
             SoldItem item = getItemById(soldItem.getId());
