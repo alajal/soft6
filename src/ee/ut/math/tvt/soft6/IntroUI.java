@@ -7,7 +7,11 @@ import java.util.Properties;
 
 public class IntroUI extends JFrame {
 
-    private JPanel panel;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel panel;
     private JLabel teamName;
     private JLabel teamLeader;
     private JLabel teamLeaderEmail;

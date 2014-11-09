@@ -19,8 +19,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 
+import org.apache.log4j.Logger;
+
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
 
@@ -31,6 +34,7 @@ import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
  */
 public class PurchaseItemPanel<T> extends JPanel {
 
+	private static final Logger log = Logger.getLogger(PurchaseItemPanel.class); 
     private static final long serialVersionUID = 1L;
     private JComboBox<StockItem> nameComboBox;
     private JTextField quantityField;
@@ -159,10 +163,7 @@ public class PurchaseItemPanel<T> extends JPanel {
     // Fill dialog with data from the "database".
     public void fillDialogFields() {
         StockItem stockItemFromComboBox = getStockItemFromComboBox();   //kasutaja sisestatud toode
-
-        //otsime, mitu toodet sellise nimega on laos
-
-
+        
         if (stockItemFromComboBox != null) {
             nameField.setText(stockItemFromComboBox.getName());
             String priceString = String.valueOf(stockItemFromComboBox.getPrice());
@@ -193,14 +194,19 @@ public class PurchaseItemPanel<T> extends JPanel {
     public void addItemEventHandler() {
         // add chosen item to the shopping cart.
         StockItem stockItem = getStockItemFromComboBox();
-        if (stockItem.getQuantity() != 0) {
+        if (stockItem != null) {
             int userEnteredQuantity;
             try {
                 userEnteredQuantity = Integer.parseInt(quantityField.getText());
             } catch (NumberFormatException ex) {
                 userEnteredQuantity = 1;
             }
-            model.getCurrentPurchaseTableModel().addStockItem(new SoldItem(stockItem, userEnteredQuantity));
+            
+            try {
+				model.getCurrentPurchaseTableModel().addItem(new SoldItem(stockItem, userEnteredQuantity));
+			} catch (VerificationFailedException e) {
+				log.info(e.getMessage());
+			}
         }
     }
 
@@ -225,7 +231,8 @@ public class PurchaseItemPanel<T> extends JPanel {
         priceField.setText("");
     }
 
-    public void populateComboBox() {
+    @SuppressWarnings("rawtypes")
+	public void populateComboBox() {
         ((DefaultComboBoxModel) this.nameComboBox.getModel()).removeAllElements();
         List<StockItem> allStockItems = model.getWarehouseTableModel().getTableRows(); // L: kysime koik tabeli read
 

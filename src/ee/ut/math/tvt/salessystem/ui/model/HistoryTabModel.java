@@ -11,7 +11,13 @@ import java.util.List;
 //JTable "kuulab üle"
 
 public class HistoryTabModel extends SalesSystemTableModel<Order> {
-    //tabelile vajalik info
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
+	//tabelile vajalik info
 
     public HistoryTabModel() {
         super(new String[]{"Order total sum", "Time of the order", "Date of the order"});
@@ -22,7 +28,6 @@ public class HistoryTabModel extends SalesSystemTableModel<Order> {
         rows.add(order);
         fireTableDataChanged();
     }
-
 
     @Override
     protected Object getColumnValue(Order order, int columnIndex) {
