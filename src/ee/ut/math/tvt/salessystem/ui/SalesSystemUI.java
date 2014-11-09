@@ -43,7 +43,7 @@ public class SalesSystemUI extends JFrame {
         setTitle("Sales system");
         setWindowsLookAndFeel();
         createWidgets();
-        setUISizeAndLocation(600, 400);
+        setUISizeAndLocation(700, 400);
 
         addWindowListener(new WindowAdapter() {
             @Override
