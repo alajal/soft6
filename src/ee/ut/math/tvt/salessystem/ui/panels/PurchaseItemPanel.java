@@ -158,11 +158,14 @@ public class PurchaseItemPanel<T> extends JPanel {
 
     // Fill dialog with data from the "database".
     public void fillDialogFields() {
-        StockItem stockItem = getStockItemFromComboBox();
+        StockItem stockItemFromComboBox = getStockItemFromComboBox();   //kasutaja sisestatud toode
 
-        if (stockItem != null) {
-            nameField.setText(stockItem.getName());
-            String priceString = String.valueOf(stockItem.getPrice());
+        //otsime, mitu toodet sellise nimega on laos
+
+
+        if (stockItemFromComboBox != null) {
+            nameField.setText(stockItemFromComboBox.getName());
+            String priceString = String.valueOf(stockItemFromComboBox.getPrice());
             priceField.setText(priceString);
         } else {
             reset();
@@ -172,8 +175,6 @@ public class PurchaseItemPanel<T> extends JPanel {
     // Search the warehouse for a StockItem with the bar code entered
     // to the barCode textfield.
 
-    // Andrey: vahetasin, et info tuleks uuest barCodeFieldist
-    // L: nyyd tuleb tegelt ka, ainult et ID'd peavad olema jarjest, alates 1st
     private StockItem getStockItemFromComboBox() {
         try {
             // int code = nameComboBox.getSelectedIndex() + 1;
@@ -192,14 +193,14 @@ public class PurchaseItemPanel<T> extends JPanel {
     public void addItemEventHandler() {
         // add chosen item to the shopping cart.
         StockItem stockItem = getStockItemFromComboBox();
-        if (stockItem != null) {
-            int quantity;
+        if (stockItem.getQuantity() != 0) {
+            int userEnteredQuantity;
             try {
-                quantity = Integer.parseInt(quantityField.getText());
+                userEnteredQuantity = Integer.parseInt(quantityField.getText());
             } catch (NumberFormatException ex) {
-                quantity = 1;
+                userEnteredQuantity = 1;
             }
-            model.getCurrentPurchaseTableModel().addStockItem(new SoldItem(stockItem, quantity));
+            model.getCurrentPurchaseTableModel().addStockItem(new SoldItem(stockItem, userEnteredQuantity));
         }
     }
 

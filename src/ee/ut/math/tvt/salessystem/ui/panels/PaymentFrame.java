@@ -234,7 +234,7 @@ public class PaymentFrame extends JFrame {
             }
 
         } catch (VerificationFailedException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage() + "tere");
         }
 
     }
