@@ -267,7 +267,7 @@ public class StockTab {
     				log.info("Item added to warehouse!");
 
     				
-    				service.addStockItem(stockItem);
+    				service.addStockItem(model.getWarehouseTableModel().getItemById(stockItem.getId()));
     				log.info("Item saved to database");
     				reset();
     				}
