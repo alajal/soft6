@@ -52,8 +52,10 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
     public String toString() {
         final StringBuilder buffer = new StringBuilder();
 
-        for (int i = 0; i < headers.length; i++)
-            buffer.append(headers[i]).append("\t");
+        for (String header : headers) {
+            buffer.append(header).append("\t");
+        }
+
         buffer.append("\n");
 
         for (final StockItem stockItem : rows) {

@@ -43,8 +43,6 @@ public class PaymentFrame extends JFrame {
     private JTextField totalOrderAmount;
     private JTextField paymentAmount;
     private JTextField changeAmount;
-    private JButton acceptButton;
-    private JButton cancelButton;
     private List<SoldItem> soldItems;
     private final SalesDomainController domainController;
     private SalesSystemModel model;
@@ -83,8 +81,8 @@ public class PaymentFrame extends JFrame {
         this.totalOrderAmount = createTotalOrderAmountField(totalAmount);
         this.paymentAmount = createPaymentAmountField();
         this.changeAmount = createChangeAmountField();
-        this.acceptButton = createAcceptButton();
-        this.cancelButton = createCancelButton();
+        JButton acceptButton = createAcceptButton();
+        JButton cancelButton = createCancelButton();
 
         panel.setLayout(new GridLayout(4, 2)); // 4 rows, 2 cols
 
@@ -126,7 +124,6 @@ public class PaymentFrame extends JFrame {
                     double orderAmt = Double.parseDouble(totalOrderAmount.getText());
                     double paymentAmt = Double.parseDouble(paymentAmount.getText());
                     double changeAmt = round(Math.max(0, paymentAmt - orderAmt), 2);
-
                     changeAmount.setText(Double.toString(changeAmt));
                 } catch (NumberFormatException e1) {
                     paymentAmount.setText("0.00");
@@ -149,11 +146,9 @@ public class PaymentFrame extends JFrame {
         JTextField t = new JTextField("0.0");
         t.setEditable(false);
         t.setEnabled(false);
-
         return t;
     }
 
-    // creates Accept button
     private JButton createAcceptButton() {
         JButton b = new JButton("Accept");
         b.addActionListener(new ActionListener() {
@@ -167,7 +162,6 @@ public class PaymentFrame extends JFrame {
         return b;
     }
 
-    // creates Cancel button
     private JButton createCancelButton() {
         JButton b = new JButton("Cancel");
         b.addActionListener(new ActionListener() {
@@ -188,39 +182,29 @@ public class PaymentFrame extends JFrame {
 
     }
 
-    // if payment >= orderAmount the order is submitted and window hidden
     protected void acceptButtonClicked() {
         try {
-            double orderAmt = Double.parseDouble(totalOrderAmount.getText());
-
+            double orderAmount = Double.parseDouble(totalOrderAmount.getText());
             String paymentText = paymentAmount.getText();
-            double paymentAmt = Double.parseDouble(paymentText);
-            // L: check if too many decimal points
-            int decimalPlaces;
-            String[] aa = paymentText.split("\\.");
-            if (aa.length <= 1) {
-                decimalPlaces = 0;
-            } else {
-                decimalPlaces = aa[1].length();
-            }
+            double paymentAmount = Double.parseDouble(paymentText);
+            int decimalPlaces = decimalPlacesController(paymentText);
 
-            if (paymentAmt >= orderAmt) {
+            if (paymentAmount >= orderAmount) {
                 if (decimalPlaces <= 2) {
                     this.domainController.submitCurrentPurchase(soldItems);
                     log.info("Sale confirmed and payment accepted.");
 
-                    //HistoryTabModel comes in
-                    HistoryTabModel historyTabModel = model.getHistoryTabModel();
                     Order order = new Order(soldItems, new Date());
+                    HistoryTabModel historyTabModel = model.getHistoryTabModel();
                     historyTabModel.addData(order);
-                    
+
                     HibernateDataService service = new HibernateDataService();
                     service.addOrder(order);
-                    log.info("Order added to database");
-                    
+
                     for (SoldItem soldItem : soldItems) {
-						service.addSoldItem(soldItem);
-					}
+                        service.addSoldItem(soldItem);
+                    }
+                    log.info("Order added to database");
 
                     model.getCurrentPurchaseTableModel().clear();
                     this.setVisible(false);
@@ -239,8 +223,17 @@ public class PaymentFrame extends JFrame {
 
     }
 
+    private int decimalPlacesController(String paymentText) {
+        int decimalPlaces;
+        String[] decimalText = paymentText.split("\\.");
+        if (decimalText.length <= 1) {
+            decimalPlaces = 0;
+        } else {
+            decimalPlaces = decimalText[1].length();
+        }
+        return decimalPlaces;
+    }
 
-    // L: helper f-n for rounding
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 

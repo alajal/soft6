@@ -308,7 +308,7 @@ public class StockTab {
 
     @SuppressWarnings("serial")
 	static class UnsuitableItem extends RuntimeException {
-    	
+
     	public UnsuitableItem() {
 			super();
 		}
