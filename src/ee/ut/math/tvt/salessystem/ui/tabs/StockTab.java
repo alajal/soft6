@@ -277,7 +277,7 @@ public class StockTab {
             	}
             }
         } catch (UnsuitableItem e) {
-            log.error(null, e);
+            log.error(e.getMessage());
             JOptionPane.showMessageDialog(null,
                     "Item with the same name already exists in the warehouse. \n" +
                             "You cannot enter item with this name.");
@@ -301,12 +301,21 @@ public class StockTab {
         List<StockItem> stockItemsFromDatabase = service.getStockItems();
         for (StockItem aStockItemsFromDatabase : stockItemsFromDatabase) {
             if ((aStockItemsFromDatabase.getName().equals(name)) && !aStockItemsFromDatabase.getId().equals(id)) {
-                throw new UnsuitableItem();
+                throw new UnsuitableItem("Cannot add item with the name that already exists in warehouse.");
             }
         }
     }
 
-    static class UnsuitableItem extends RuntimeException {
+    @SuppressWarnings("serial")
+	static class UnsuitableItem extends RuntimeException {
+    	
+    	public UnsuitableItem() {
+			super();
+		}
+
+		public UnsuitableItem(String string) {
+			super(string);
+		}
     }
 
 }
