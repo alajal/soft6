@@ -22,7 +22,7 @@ import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 public class ConsoleUI {
     private static final Logger log = Logger.getLogger(ConsoleUI.class);
     private final SalesDomainController salesDomainController;
-    private List<StockItem> cart;
+    private List<SoldItem> cart;
     private List<StockItem> warehouse;
 
     public ConsoleUI(SalesDomainController domainController) {
@@ -74,6 +74,20 @@ public class ConsoleUI {
         }
         System.out.println("-------------------------");
     }
+    
+    private void showCart() {
+        System.out.println("-------------------------");
+        for (SoldItem soldItem : cart) {
+            System.out.println(soldItem.getId() + " "
+                    + soldItem.getName() + " "
+                    + soldItem.getPrice() + "Euro ("
+                    + soldItem.getQuantity() + " items)");
+        }
+        if (cart.size() == 0) {
+            System.out.println("\tNothing");
+        }
+        System.out.println("-------------------------");
+    }
 
     private void printUsage() {
         System.out.println("-------------------------");
@@ -113,14 +127,10 @@ public class ConsoleUI {
         else if (commands[0].equals("w"))
             showStock(warehouse);
         else if (commands[0].equals("c"))
-            showStock(cart);
+            showCart();
         else if (commands[0].equals("p"))
             try {
-                List<SoldItem> soldItems = new ArrayList<>();
-                for (StockItem stockItem : cart) {
-                    soldItems.add(new SoldItem(stockItem, stockItem.getQuantity()));
-                }
-                salesDomainController.submitCurrentPurchase(soldItems);
+                salesDomainController.submitCurrentPurchase(cart);
                 cart.clear();
             } catch (VerificationFailedException e) {
                 log.error(e.getMessage());
@@ -135,8 +145,7 @@ public class ConsoleUI {
         else if (commands[0].equals("a") && commands.length == 3) {
             int idx = Integer.parseInt(commands[1]);
             int amount = Integer.parseInt(commands[2]);
-            StockItem item = getStockItemById(idx);
-            item.setQuantity(Math.min(amount, item.getQuantity()));
+            SoldItem item = new SoldItem(getStockItemById(idx), Math.min(amount, getStockItemById(idx).getQuantity()));
             cart.add(item);
         }
     }
