@@ -265,8 +265,6 @@ public class StockTab {
                     itemNameController(service);
                     model.getWarehouseTableModel().addItem(stockItem);
     				log.info("Item added to warehouse!");
-
-    				
     				service.addStockItem(stockItem);
     				log.info("Item saved to database");
     				reset();
@@ -299,8 +297,8 @@ public class StockTab {
     private void itemNameController(HibernateDataService service) {
         //if the user wants to add new item that has the name of existing item, notify the user
         String name = stockItem.getName();
-        //List<StockItem> stockItemsFromDatabase = service.getStockItems();
-        List<StockItem> stockItemsFromDatabase = model.getWarehouseTableModel().getTableRows();
+        List<StockItem> stockItemsFromDatabase = service.getStockItems();
+        //List<StockItem> stockItemsFromDatabase = model.getWarehouseTableModel().getTableRows();
         for (StockItem aStockItemsFromDatabase : stockItemsFromDatabase) {
             if ((aStockItemsFromDatabase.getName().equals(name)) && !aStockItemsFromDatabase.getId().equals(id)) {
                 throw new UnsuitableItem("Cannot add item with the name that already exists in warehouse.");

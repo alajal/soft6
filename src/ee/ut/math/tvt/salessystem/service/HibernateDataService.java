@@ -38,7 +38,7 @@ public class HibernateDataService {
 		Transaction trans = null;
 		try {
 			trans = session.beginTransaction();
-			if ((StockItem)session.get(StockItem.class, stockItem.getId()) != null) {
+			if (session.get(StockItem.class, stockItem.getId()) != null) {
 				StockItem stockItemFromTable = (StockItem)session.get(StockItem.class, stockItem.getId());
 				stockItemFromTable.setQuantity(stockItem.getQuantity());
 				session.update(stockItemFromTable);
