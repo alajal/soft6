@@ -38,7 +38,13 @@ public class HibernateDataService {
 		Transaction trans = null;
 		try {
 			trans = session.beginTransaction();
-			session.save(stockItem);
+			if ((StockItem)session.get(StockItem.class, stockItem.getId()) != null) {
+				StockItem stockItemFromTable = (StockItem)session.get(StockItem.class, stockItem.getId());
+				stockItemFromTable.setQuantity(stockItem.getQuantity());
+				session.update(stockItemFromTable);
+			} else {
+				session.save(stockItem);
+			}
 			trans.commit();
 		} catch (HibernateException e) {
 			if (trans != null) trans.rollback();
