@@ -296,19 +296,18 @@ public class StockTab {
     }
 
     private void itemNameController(HibernateDataService service) {
-        //if the user wants to add new item that has the name of existing item, notify the user
         String name = stockItem.getName();
-        //List<StockItem> stockItemsFromDatabase = service.getStockItems();
-        List<StockItem> stockItemsFromDatabase = model.getWarehouseTableModel().getTableRows();
-        for (StockItem aStockItemsFromDatabase : stockItemsFromDatabase) {
-            if ((aStockItemsFromDatabase.getName().equals(name)) && !aStockItemsFromDatabase.getId().equals(id)) {
+        //List<StockItem> stockItems = service.getStockItems();
+        List<StockItem> stockItems = model.getWarehouseTableModel().getTableRows();
+        for (StockItem item : stockItems) {
+            if ((item.getName().equals(name)) && !item.getId().equals(id)) {
                 throw new UnsuitableItem("Cannot add item with the name that already exists in warehouse.");
             }
         }
     }
 
     @SuppressWarnings("serial")
-	static class UnsuitableItem extends RuntimeException {
+	public static class UnsuitableItem extends RuntimeException {
     	
     	public UnsuitableItem() {
 			super();

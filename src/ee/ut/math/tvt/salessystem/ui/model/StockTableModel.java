@@ -36,7 +36,7 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
      * Add new stock item to table. If there already is a stock item with
      * same id, then existing item's quantity will be increased.
      */
-    public void addItem(final StockItem stockItem) {
+    public StockItem addItem(final StockItem stockItem) {
         try {
             StockItem item = getItemById(stockItem.getId());
             item.setQuantity(item.getQuantity() + stockItem.getQuantity());
@@ -46,6 +46,7 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
             log.debug("Added " + stockItem.getName() + " quantity of " + stockItem.getQuantity());
         }
         fireTableDataChanged();
+        return stockItem;
     }
 
     @Override
