@@ -1,4 +1,4 @@
-package ee.ut.math.tvt.salesystem.ui.model;
+package ee.ut.math.tvt.salessystem.ui.model;
 
 
 import ee.ut.math.tvt.salessystem.domain.data.Order;
@@ -13,6 +13,9 @@ import javax.swing.event.TableModelListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.Assert.assertTrue;
 
 public class HistoryTabModelTest {
 
@@ -23,6 +26,7 @@ public class HistoryTabModelTest {
     StockItem stockItem2;
     Order order;
     List<SoldItem> orderedItems;
+
 
     @Before
     public void setUp() {
@@ -40,18 +44,15 @@ public class HistoryTabModelTest {
 
     @Test
     //testib kas modeli muutusel antakse sellest teada "vaatlejatele" (nt. JTable'ile)
-    public void testFireTableDataChangedMethodOnModel() {
-/*        historyTabModel.addTableModelListener(new TableModelListener() {
+    public void testWhenTableChangedThenListenerIsNotified() {
+        final AtomicBoolean listenerWasNotified = new AtomicBoolean();
+        historyTabModel.addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                //System.out.println(e + "tere");
-
+                listenerWasNotified.set(true);
             }
         });
-        historyTabModel.addData(order); //pannakse käima fireTableDataChanged*/
-
-
-
-
+        historyTabModel.addData(order); //pannakse käima fireTableDataChanged
+        assertTrue(listenerWasNotified.get());
     }
 }

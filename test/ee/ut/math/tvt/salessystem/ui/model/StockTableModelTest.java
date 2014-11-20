@@ -1,4 +1,4 @@
-package ee.ut.math.tvt.salesystem.ui.model;
+package ee.ut.math.tvt.salessystem.ui.model;
 
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
