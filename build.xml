@@ -155,7 +155,9 @@
 
 			<formatter type="brief" usefile="false" />
 			<batchtest>
-				<fileset dir="${build.test.dir}" includes="**/*.class" />
+                <fileset dir="${build.test.dir}" includes="**/*.class">
+                    <exclude name="**/HistoryTabModelTest$1.class" />
+                </fileset>
 			</batchtest>
 		</junit>
 
