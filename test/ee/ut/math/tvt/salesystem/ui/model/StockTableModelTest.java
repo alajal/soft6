@@ -5,12 +5,11 @@ import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 import ee.ut.math.tvt.salessystem.ui.model.PurchaseInfoTableModel;
 import ee.ut.math.tvt.salessystem.ui.model.StockTableModel;
-import ee.ut.math.tvt.salessystem.ui.tabs.StockTab;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 import java.util.NoSuchElementException;
+
+import static org.junit.Assert.assertEquals;
 
 public class StockTableModelTest {
 
@@ -24,21 +23,11 @@ public class StockTableModelTest {
         warehouseTableModel.addItem(newItem);
     }
 
-    @Test(expected = StockTab.UnsuitableItem.class)
+    @Test(expected = StockTableModel.UnsuitableItem.class)
+    //test only name but with different id
     public void testValidateNameUniqueness() {
-
         StockItem otherItem = new StockItem((long) 2, "Ice-cream", "chocolate ice-cream", 4, 10);
-
-        List<StockItem> stockItems = warehouseTableModel.getTableRows();
-        //StockTab klassi itemNameController() meetodi taaskasutus; see test peaks seda meetodit kontrollima
-        for (StockItem item : stockItems) {
-            if ((item.getName().equals(otherItem.getName())) && !item.getId().equals(otherItem.getId())) {
-                throw new StockTab.UnsuitableItem("Cannot add item with the name that already exists in warehouse.");
-            } else {
-                warehouseTableModel.addItem(otherItem);
-            }
-        }
-        //assertEquals(items.get(0).getName(), result);
+        warehouseTableModel.addItem(otherItem);
     }
 
     @Test(expected = VerificationFailedException.class)
@@ -54,12 +43,22 @@ public class StockTableModelTest {
     @Test
     public void testGetItemByIdWhenItemExists() {
         StockItem item = warehouseTableModel.getItemById((long) 1);
-        System.out.println(item.getName());
+        assertEquals(newItem.getName(), item.getName());
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testGetItemByIdWhenThrowsException() {
         //küsin sellist toodet, mida ei eksisteeri
-        warehouseTableModel.getItemById((long) 23);
+        warehouseTableModel.getItemById((long) 76);
+    }
+
+    @Test
+    public void testAddItemWithSameIdAndSameName() {
+        StockItem otherItem = new StockItem((long) 1, "Ice-cream", "chocolate ice-cream", 4, 10);
+        warehouseTableModel.addItem(otherItem);
+        StockItem itemInStock = warehouseTableModel.getItemById(1L);
+        int itemQuantity = itemInStock.getQuantity();
+        int expectedQuantity = 20;
+        assertEquals(expectedQuantity, itemQuantity);
     }
 }

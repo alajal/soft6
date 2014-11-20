@@ -262,7 +262,6 @@ public class StockTab {
             	//check if fields contain correct data (quantity and id should only consist of numbers 0-9 and price input is restricted to 0-2 decimal places)
             	if(fields[0].getText().matches("^\\d+$") && fields[3].getText().matches("^\\d+$") && fields[2].getText().matches(("[0-9]*\\.?[0-9]{0,2}"))){
                     setUserEnteredItemInfo();
-                    itemNameController(service);
                     model.getWarehouseTableModel().addItem(stockItem);
     				log.info("Item added to warehouse!");
 
@@ -276,7 +275,7 @@ public class StockTab {
             		reset();
             	}
             }
-        } catch (UnsuitableItem e) {
+        } catch (StockTableModel.UnsuitableItem e) {
             log.error(e.getMessage());
             JOptionPane.showMessageDialog(null,
                     "Item with the same name already exists in the warehouse. \n" +
@@ -294,28 +293,4 @@ public class StockTab {
         stockItem.setPrice(price);
         stockItem.setQuantity(quantity);
     }
-
-    private void itemNameController(HibernateDataService service) {
-        String name = stockItem.getName();
-        //List<StockItem> stockItems = service.getStockItems();
-        List<StockItem> stockItems = model.getWarehouseTableModel().getTableRows();
-        for (StockItem item : stockItems) {
-            if ((item.getName().equals(name)) && !item.getId().equals(id)) {
-                throw new UnsuitableItem("Cannot add item with the name that already exists in warehouse.");
-            }
-        }
-    }
-
-    @SuppressWarnings("serial")
-	public static class UnsuitableItem extends RuntimeException {
-    	
-    	public UnsuitableItem() {
-			super();
-		}
-
-		public UnsuitableItem(String string) {
-			super(string);
-		}
-    }
-
 }

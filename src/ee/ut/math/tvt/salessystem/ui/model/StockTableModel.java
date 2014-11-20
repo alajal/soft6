@@ -1,7 +1,7 @@
 package ee.ut.math.tvt.salessystem.ui.model;
 
+import java.util.List;
 import java.util.NoSuchElementException;
-
 import org.apache.log4j.Logger;
 
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
@@ -36,8 +36,9 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
      * Add new stock item to table. If there already is a stock item with
      * same id, then existing item's quantity will be increased.
      */
-    public StockItem addItem(final StockItem stockItem) {
+    public void addItem(final StockItem stockItem) {
         try {
+            checkNameUniquess(stockItem);   //l2heb edasi, kui nimed on erinevad ning id-d on samad
             StockItem item = getItemById(stockItem.getId());
             item.setQuantity(item.getQuantity() + stockItem.getQuantity());
             log.debug("Found existing item " + stockItem.getName() + " increased quantity by " + stockItem.getQuantity());
@@ -46,7 +47,17 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
             log.debug("Added " + stockItem.getName() + " quantity of " + stockItem.getQuantity());
         }
         fireTableDataChanged();
-        return stockItem;
+
+    }
+
+    private void checkNameUniquess(StockItem stockItem) {
+        String name = stockItem.getName();
+        List<StockItem> stockItems = this.getTableRows();
+        for (StockItem it : stockItems) {
+            if ((it.getName().equals(name)) && !it.getId().equals(stockItem.getId())) {
+                throw new UnsuitableItem("Cannot add item with the name that already exists in warehouse.");
+            }
+        }
     }
 
     @Override
@@ -70,4 +81,15 @@ public class StockTableModel extends SalesSystemTableModel<StockItem> {
         return buffer.toString();
     }
 
+    @SuppressWarnings("serial")
+    public static class UnsuitableItem extends RuntimeException {
+
+        public UnsuitableItem() {
+            super();
+        }
+
+        public UnsuitableItem(String string) {
+            super(string);
+        }
+    }
 }
