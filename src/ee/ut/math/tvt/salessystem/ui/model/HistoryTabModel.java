@@ -42,17 +42,17 @@ public class HistoryTabModel extends SalesSystemTableModel<Order> {
         throw new IllegalArgumentException("Column index out of range.");
     }
 
-    private String getTimeOftheOrder(Order order) {
+    public String getTimeOftheOrder(Order order) {
         SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
         return timeFormatter.format(order.getDateAndTimeOfTheOrder());
     }
 
-    private String getDateOftheOrder(Order order) {
+    public String getDateOftheOrder(Order order) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormatter.format(order.getDateAndTimeOfTheOrder());
     }
 
-    private double getOrderedSum(Order order) {
+    public double getOrderedSum(Order order) {
         Double orderSum = 0.0;
         List<SoldItem> orderedItems = order.getOrderedItems();
         for (SoldItem item : orderedItems) {
