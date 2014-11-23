@@ -1,4 +1,4 @@
-package ee.ut.math.tvt.salessystem.domain.controller.impl;
+package ee.ut.math.tvt.salessystem.ui.panels;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SalesDomainControllerImplTest {
+public class PaymentTest {
 
 
 	@Test
