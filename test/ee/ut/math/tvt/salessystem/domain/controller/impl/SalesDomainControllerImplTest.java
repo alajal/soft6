@@ -1,19 +1,23 @@
 package ee.ut.math.tvt.salessystem.domain.controller.impl;
 
 import static org.junit.Assert.assertEquals;
+
+import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
+import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
+import ee.ut.math.tvt.salessystem.domain.data.StockItem;
+import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SalesDomainControllerImplTest {
-	
-	@Before
-	public void setUp() {
-		
-	}
-	
+
+
 	@Test
-	public void exampleTest() {
-		assertEquals(1.0, 1.0, 0.0001);
+	public void testNumbers()  {
+        assertEquals(4,4);
 	}
 
 }

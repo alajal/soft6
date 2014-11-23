@@ -10,9 +10,6 @@ import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 
 public class SoldItemTest {
 	StockItem newItem1;
-	
-	SoldItem newItem;
-    
     
     @Test
     public void testGetSum() {
