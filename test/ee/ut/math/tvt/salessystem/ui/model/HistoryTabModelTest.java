@@ -44,14 +44,29 @@ public class HistoryTabModelTest {
 	@Test
 	public void testAddSoldItem() {
 	// kas lisatud SoldItem on nyyd tabelis?
+		orderedItems.add(soldItem1);
+		order = new Order(orderedItems, new Date());
+		historyTabModel.addData(order);
 		
+		boolean orderInTable = false;
+		outerloop:
+		for (Order orderFromTable : historyTabModel.getTableRows()) {
+			if (orderFromTable == order) {
+				for (SoldItem soldItemFromTable : orderFromTable.getOrderedItems()) {
+					if (soldItemFromTable == soldItem1) {
+						orderInTable = true;
+						break outerloop;
+					}
+				}
+			}
+		}
+		assertTrue(orderInTable);
 	}
 	
 	@Test
 	public void testGetSumWithNoItems() {
 	// lisame tyhja orderi, kas summa on 0
 		order = new Order(orderedItems, new Date());
-		historyTabModel.addData(order);
 		double orderSum = historyTabModel.getOrderedSum(order);
 		assertEquals(orderSum, 0.0, 0.0001);
 	}
@@ -61,7 +76,6 @@ public class HistoryTabModelTest {
 	// lisame orderi, milles yks item, kas summa klapib
 		orderedItems.add(soldItem1);
 		order = new Order(orderedItems, new Date());
-		historyTabModel.addData(order);
 		double orderSum = historyTabModel.getOrderedSum(order);
 		assertEquals(orderSum, 2.0, 0.0001);
 	}
@@ -72,7 +86,6 @@ public class HistoryTabModelTest {
 		orderedItems.add(soldItem1);
 		orderedItems.add(soldItem2);
 		order = new Order(orderedItems, new Date());
-		historyTabModel.addData(order);
 		double orderSum = historyTabModel.getOrderedSum(order);
 		assertEquals(orderSum, 8.0, 0.0001);
 	}

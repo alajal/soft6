@@ -1,4 +1,4 @@
-package ee.ut.math.tvt.salessystem.ui.model;
+package ee.ut.math.tvt.salessystem.domain.data;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,7 +18,7 @@ public class SoldItemTest {
     public void testGetSum() {
     	newItem1 = new StockItem((long) 1, "Ice-cream", "jats", 4, 10);
         SoldItem item = new SoldItem(newItem1, 10);
-    	System.out.println(item.getSum());
+    	// System.out.println(item.getSum());
 
         assertEquals(item.getSum(), 40.0, 0.0001);
     }
@@ -26,7 +26,7 @@ public class SoldItemTest {
     public void testSumZero() {
     	newItem1 = new StockItem((long) 1, "Ice-cream", "jats", 4, 10);
         SoldItem item = new SoldItem(newItem1, 0);
-    	System.out.println(item.getSum());
+    	// System.out.println(item.getSum());
 
         assertEquals(item.getSum(), 0.0, 0.0001);
     }
