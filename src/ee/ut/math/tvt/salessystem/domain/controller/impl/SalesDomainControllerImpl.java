@@ -1,5 +1,6 @@
 package ee.ut.math.tvt.salessystem.domain.controller.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
@@ -7,15 +8,29 @@ import ee.ut.math.tvt.salessystem.domain.data.Order;
 import ee.ut.math.tvt.salessystem.domain.data.SoldItem;
 import ee.ut.math.tvt.salessystem.domain.data.StockItem;
 import ee.ut.math.tvt.salessystem.domain.exception.VerificationFailedException;
+import ee.ut.math.tvt.salessystem.ui.model.HistoryTabModel;
+import ee.ut.math.tvt.salessystem.ui.model.SalesSystemModel;
+import ee.ut.math.tvt.salessystem.ui.panels.PaymentFrame;
 import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 import ee.ut.math.tvt.salessystem.service.HibernateDataService;
+import org.apache.log4j.Logger;
+
+import javax.xml.ws.Service;
 
 /**
  * Implementation of the SalesDomainController interface.
  */
 public class SalesDomainControllerImpl implements SalesDomainController {
-	
-	HibernateDataService service = new HibernateDataService();
+    private static final Logger log = Logger.getLogger(SalesDomainController.class);
+	final HibernateDataService service;
+
+    public SalesDomainControllerImpl() {
+        this.service = new HibernateDataService();
+    }
+
+    public SalesDomainControllerImpl(HibernateDataService dataService) {
+        this.service = dataService;
+    }
 
     public void submitCurrentPurchase(List<SoldItem> goodsChosenToBuy) throws VerificationFailedException {
         reduceStock(goodsChosenToBuy);
@@ -51,28 +66,34 @@ public class SalesDomainControllerImpl implements SalesDomainController {
     public List<StockItem> loadWarehouseState() {
         // XXX mock implementation
 //        List<StockItem> stockItemArrayList = new ArrayList<StockItem>();
-//
-//        StockItem chips = new StockItem(1l, "Lays chips", "Potato chips", 11.0, 5);
-//        StockItem chupaChups = new StockItem(2l, "Chupa-chups", "Sweets", 8.0, 8);
-//        StockItem frankfurters = new StockItem(3l, "Frankfurters", "Beer sauseges", 15.0, 12);
-//        StockItem beer = new StockItem(4l, "Free Beer", "Student's delight", 3.0, 1);
-//
+//        StockItem chips = new StockItem(1l, "Lays chips", "Potato chips", 11.0, 5);//
 //        stockItemArrayList.add(chips);
-//        stockItemArrayList.add(chupaChups);
-//        stockItemArrayList.add(frankfurters);
-//        stockItemArrayList.add(beer);
-    	
-    	List<StockItem> stockItemArrayList = service.getStockItems();
-        return stockItemArrayList;
+
+        return service.getStockItems();
     }
 
     public List<Order> loadOrderHistoryData(){
-        List<Order> ordersList = service.getOrders();
-        return ordersList;
+        return service.getOrders();
     }
-
     
     public void endSession() {
         HibernateUtil.closeSession();
+    }
+
+    public void createPayment( List<SoldItem> soldItems, SalesSystemModel model) throws VerificationFailedException {
+        model.getDomainController().submitCurrentPurchase(soldItems);   //reduce stock
+        log.info("Sale confirmed and payment accepted.");
+
+        Order order = new Order(soldItems, new Date());
+        HistoryTabModel historyTabModel = model.getHistoryTabModel();
+        historyTabModel.addData(order);
+
+        service.addOrder(order);
+
+        for (SoldItem soldItem : soldItems) {
+            service.addSoldItem(soldItem);
+        }
+        log.info("Order added to database");
+        model.getCurrentPurchaseTableModel().clear();
     }
 }

@@ -9,7 +9,6 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -20,10 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
-import ee.ut.math.tvt.salessystem.domain.data.Order;
-import ee.ut.math.tvt.salessystem.service.HibernateDataService;
-import ee.ut.math.tvt.salessystem.ui.model.HistoryTabModel;
 
 import org.apache.log4j.Logger;
 
@@ -191,25 +186,9 @@ public class PaymentFrame extends JFrame {
 
             if (paymentAmount >= orderAmount) {
                 if (decimalPlaces <= 2) {
-                    this.domainController.submitCurrentPurchase(soldItems);
-                    log.info("Sale confirmed and payment accepted.");
-
-                    Order order = new Order(soldItems, new Date());
-                    HistoryTabModel historyTabModel = model.getHistoryTabModel();
-                    historyTabModel.addData(order);
-
-                    HibernateDataService service = new HibernateDataService();
-                    service.addOrder(order);
-
-                    for (SoldItem soldItem : soldItems) {
-                        service.addSoldItem(soldItem);
-                    }
-                    log.info("Order added to database");
-
-                    model.getCurrentPurchaseTableModel().clear();
+                    domainController.createPayment(soldItems, model);
                     this.setVisible(false);
                     purchaseTab.endSale();
-
                 } else {
                     JOptionPane.showMessageDialog(null, "Too many decimal places!");
                 }
@@ -222,6 +201,7 @@ public class PaymentFrame extends JFrame {
         }
 
     }
+
 
     private int decimalPlacesController(String paymentText) {
         int decimalPlaces;

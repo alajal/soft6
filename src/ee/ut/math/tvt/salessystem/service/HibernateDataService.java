@@ -13,8 +13,16 @@ import ee.ut.math.tvt.salessystem.util.HibernateUtil;
 
 
 public class HibernateDataService {
-	private Session session = HibernateUtil.currentSession();
-	
+	private Session session;
+
+	public HibernateDataService() {
+		session = HibernateUtil.currentSession();
+	}
+
+	public HibernateDataService(Session session) {
+		this.session = session;
+	}
+
 	// paring "from entity_name" tagastabki koik read, list() teeb selle veel listiks
 	public List<StockItem> getStockItems() {
 		@SuppressWarnings("unchecked")

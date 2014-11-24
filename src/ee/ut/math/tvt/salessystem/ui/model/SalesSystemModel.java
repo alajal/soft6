@@ -42,4 +42,7 @@ public class SalesSystemModel {
         return orderedGoodsHistoryModel;
     }
 
+    public SalesDomainController getDomainController() {
+        return domainController;
+    }
 }

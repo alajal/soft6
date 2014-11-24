@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import ee.ut.math.tvt.salessystem.service.HibernateDataService;
 import org.apache.log4j.Logger;
 
 import ee.ut.math.tvt.salessystem.domain.controller.SalesDomainController;
@@ -21,6 +22,7 @@ public class Intro {
 
 
     public static void main(String[] args) throws IOException {
+
         final SalesDomainController salesDomainController = new SalesDomainControllerImpl();
 
         if (args.length == 1 && args[0].equals(CONSOLE)) {
